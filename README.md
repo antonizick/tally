@@ -12,6 +12,30 @@ A privacy-first, open-source personal & family finance dashboard. All data stays
 - **Pivot Reports** — Group by category/account/month, export to CSV.
 - **Dark UI** — React 19 + Tailwind + Recharts.
 
+## Production Installation
+
+Install Tally on Ubuntu/Debian with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/antonizick/tally/main/install.sh | sudo bash
+```
+
+**What it does:**
+- ✓ Installs all system dependencies (Python 3.10+, Node.js, nginx)
+- ✓ Clones Tally from this repo to `/opt/tally`
+- ✓ Builds the backend (Python venv) and frontend (React)
+- ✓ Configures nginx as reverse proxy (port 80)
+- ✓ Sets up systemd service for auto-start/restart
+- ✓ Optionally installs Ollama for AI categorization
+- ✓ Seeds the database with sample data
+- ✓ Starts services and prints access URL
+
+**After installation:** Access your Tally instance at `http://your-server-ip`
+
+For detailed setup, troubleshooting, configuration, and management instructions, see **[INSTALL.md](INSTALL.md)**.
+
+---
+
 ## Quick Start (Dev)
 
 ```bash
