@@ -209,6 +209,77 @@ function NetWorthCard({ name, value, prevValue, items }: {
   )
 }
 
+function AssetsTrendTooltip({ active, payload, label, allData }: any) {
+  if (!active || !payload || !payload.length) return null
+
+  const currentIndex = allData.findIndex((d: any) => d.month === label)
+  const prevData = currentIndex > 0 ? allData[currentIndex - 1] : null
+
+  return (
+    <div
+      className="border border-border rounded-xl shadow-2xl p-3"
+      style={{ backgroundColor: 'hsl(222 47% 14%)' }}
+    >
+      <p className="text-xs text-white font-medium mb-2">{label}</p>
+      <div className="space-y-1">
+        {payload.map((item: any) => {
+          const current = item.value
+          const prev = prevData ? prevData[item.dataKey] : null
+          const change = prev != null ? current - prev : null
+          const isUp = change != null && change > 0
+          const isDown = change != null && change < 0
+
+          return (
+            <div key={item.dataKey} className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-muted-foreground truncate">{item.dataKey}</span>
+              <span className={`shrink-0 font-medium ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
+                {formatCurrency(current)}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function PortfolioTooltip({ active, payload, label, allData }: any) {
+  if (!active || !payload || !payload.length) return null
+
+  const currentIndex = allData.findIndex((d: any) => d.week === label)
+  const prevData = currentIndex > 0 ? allData[currentIndex - 1] : null
+
+  return (
+    <div
+      className="border border-border rounded-xl shadow-2xl p-3"
+      style={{ backgroundColor: 'hsl(222 47% 14%)' }}
+    >
+      <p className="text-xs text-white font-medium mb-2">
+        {new Date(label + 'T00:00:00').toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' })}
+      </p>
+      <div className="space-y-1">
+        {payload.map((item: any) => {
+          const current = item.value
+          const prev = prevData ? prevData[item.dataKey] : null
+          const change = prev != null ? current - prev : null
+          const isUp = change != null && change > 0
+          const isDown = change != null && change < 0
+          const hasChange = change != null && change !== 0
+
+          return (
+            <div key={item.dataKey} className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-muted-foreground truncate">{item.dataKey}</span>
+              <span className={`shrink-0 font-medium ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
+                {formatCurrency(current)}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function Dashboard() {
   const { dateFrom, dateTo, setDateFrom, setDateTo } = useDashboardDates()
   const [showQuiet, setShowQuiet] = useState(false)
@@ -451,12 +522,7 @@ export default function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                 <YAxis tickFormatter={v => formatCurrency(v, true)} tick={{ fontSize: 11 }} />
-                <Tooltip
-                  formatter={(val: number, name: string) => [formatCurrency(val), name]}
-                  contentStyle={TOOLTIP_STYLE}
-                  labelStyle={TOOLTIP_LABEL_STYLE}
-                  itemStyle={TOOLTIP_ITEM_STYLE}
-                />
+                <Tooltip content={<AssetsTrendTooltip allData={trendData} />} />
                 <Area type="monotone" dataKey="assets" stroke="#3b82f6" fill="url(#colorAssets)" name="Assets" strokeWidth={2} />
                 <Area type="monotone" dataKey="liabilities" stroke="#ec4899" fill="url(#colorLiabilities)" name="Liabilities" strokeWidth={2} />
               </AreaChart>
@@ -565,16 +631,7 @@ export default function Dashboard() {
                     }}
                   />
                   <YAxis tickFormatter={v => formatCurrency(v, true)} tick={{ fontSize: 11 }} />
-                  <Tooltip
-                    formatter={(val: number, name: string) => [formatCurrency(val), name]}
-                    labelFormatter={w => {
-                      const d = new Date(w + 'T00:00:00')
-                      return `Week of ${d.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' })}`
-                    }}
-                    contentStyle={TOOLTIP_STYLE}
-                    labelStyle={TOOLTIP_LABEL_STYLE}
-                    itemStyle={TOOLTIP_ITEM_STYLE}
-                  />
+                  <Tooltip content={<PortfolioTooltip allData={weeklyTotals} />} />
                   <Legend iconType="circle" iconSize={8} formatter={val => <span className="text-xs text-muted-foreground">{val}</span>} />
                   <Line
                     type="monotone"
@@ -604,8 +661,8 @@ export default function Dashboard() {
           {/* Holdings tile */}
           <div className="bg-card border border-border rounded-xl p-5 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold">Holdings</h3>
-              <span className="text-xs text-muted-foreground">vs prev week</span>
+              <h3 className="font-semibold text-lg">Holdings</h3>
+              <span className="text-sm text-muted-foreground">vs prev week</span>
             </div>
 
             {portfolioLoading ? (
@@ -623,25 +680,25 @@ export default function Dashboard() {
                     <div key={h.ticker} className="py-2.5 flex items-center gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-sm font-semibold font-mono">{h.ticker}</span>
+                          <span className="text-base font-semibold font-mono">{h.ticker}</span>
                           {h.direction === 'up' ? (
                             <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                           ) : (
                             <TrendingDown className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                           )}
-                          <span className={`text-xs font-medium ${h.direction === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          <span className={`text-sm font-medium ${h.direction === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
                             {h.change_pct >= 0 ? '+' : ''}{h.change_pct.toFixed(2)}%
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-sm text-muted-foreground mt-0.5">
                           {h.quantity.toLocaleString(undefined, { maximumFractionDigits: 4 })} shares
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className={`text-sm font-bold ${h.direction === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        <p className={`text-base font-bold ${h.direction === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
                           {formatCurrency(h.market_value)}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           @{formatCurrency(h.current_price)}
                         </p>
                       </div>
@@ -650,8 +707,8 @@ export default function Dashboard() {
                 </div>
 
                 <div className="pt-2 border-t border-border flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">Total</span>
-                  <span className="text-base font-bold text-violet-400">{formatCurrency(totalMarketValue)}</span>
+                  <span className="text-sm text-muted-foreground uppercase tracking-wider">Total</span>
+                  <span className="text-lg font-bold text-violet-400">{formatCurrency(totalMarketValue)}</span>
                 </div>
               </>
             )}
