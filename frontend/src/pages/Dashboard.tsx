@@ -65,67 +65,104 @@ function BreakdownTooltip({ items, pos }: { items: BreakdownItem[]; pos: { x: nu
   )
 }
 
-function DetailLineTooltip({ active, payload, label, position }: any) {
-  if (!active || !payload || !payload.length) return null
+function DetailTrendChart({ data, assetNames, liabNames }: {
+  data: any[]
+  assetNames: string[]
+  liabNames: string[]
+}) {
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null)
 
-  const items = payload.filter((p: any) => !p.dataKey.startsWith('_prev_'))
-  if (items.length === 0) return null
+  const DetailTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload || !payload.length || !cursorPos) return null
 
-  // Calculate changes for each item
-  const changes = items.map((item: any) => {
-    const current = item.value
-    const prev = item.payload[`_prev_${item.dataKey}`]
-    const change = prev != null && prev !== 0 ? current - prev : null
-    return { ...item, change, prev }
-  }).sort((a: any, b: any) => {
-    const aChange = a.change ?? 0
-    const bChange = b.change ?? 0
-    return Math.abs(bChange) - Math.abs(aChange)
-  })
+    const items = payload.filter((p: any) => !p.dataKey.startsWith('_prev_'))
+    if (items.length === 0) return null
 
-  const maxGainItem = changes.find((c: any) => c.change != null && c.change > 0)
-  const maxLossItem = changes.find((c: any) => c.change != null && c.change < 0)
+    const changes = items.map((item: any) => {
+      const current = item.value
+      const prev = item.payload[`_prev_${item.dataKey}`]
+      const change = prev != null && prev !== 0 ? current - prev : null
+      return { ...item, change, prev }
+    }).sort((a: any, b: any) => {
+      const aChange = a.change ?? 0
+      const bChange = b.change ?? 0
+      return Math.abs(bChange) - Math.abs(aChange)
+    })
 
-  const posX = position?.x ?? 0
-  const posY = position?.y ?? 0
+    const maxGainItem = changes.find((c: any) => c.change != null && c.change > 0)
+    const maxLossItem = changes.find((c: any) => c.change != null && c.change < 0)
+
+    return (
+      <div
+        className="fixed z-50 pointer-events-none w-80 border border-border rounded-xl shadow-2xl p-3"
+        style={{
+          backgroundColor: 'hsl(222 47% 14%)',
+          left: `${cursorPos.x + 10}px`,
+          top: `${cursorPos.y - 10}px`,
+        }}
+      >
+        <p className="text-xs text-muted-foreground font-medium mb-2">{label}</p>
+        <div className="space-y-1">
+          {changes.map((item: any) => {
+            const current = item.value
+            const change = item.change
+            const isBoldGain = change != null && maxGainItem && item.dataKey === maxGainItem.dataKey
+            const isBoldLoss = change != null && maxLossItem && item.dataKey === maxLossItem.dataKey
+            const isBold = isBoldGain || isBoldLoss
+            const isUp = change != null && change > 0
+            const isDown = change != null && change < 0
+
+            return (
+              <div key={item.dataKey} className="flex items-center justify-between gap-3 text-xs">
+                <span className="text-muted-foreground truncate">{item.dataKey}</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={isBold ? 'font-bold' : 'font-medium'}>
+                    {formatCurrency(current)}
+                  </span>
+                  {change != null && (
+                    <span className={`text-xs ${isBold ? 'font-bold' : 'font-medium'} ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
+                      {isUp ? '+' : ''}{formatCurrency(change)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
-      className="fixed z-50 pointer-events-none w-80 border border-border rounded-xl shadow-2xl p-3"
-      style={{
-        backgroundColor: 'hsl(222 47% 14%)',
-        left: `${posX + 10}px`,
-        top: `${posY - 10}px`,
-      }}
+      className="lg:col-span-2 bg-card border border-border rounded-xl p-5"
+      onMouseMove={e => setCursorPos({ x: e.clientX, y: e.clientY })}
+      onMouseLeave={() => setCursorPos(null)}
     >
-      <p className="text-xs text-muted-foreground font-medium mb-2">{label}</p>
-      <div className="space-y-1">
-        {changes.map((item: any) => {
-          const current = item.value
-          const change = item.change
-          const isBoldGain = change != null && maxGainItem && item.dataKey === maxGainItem.dataKey
-          const isBoldLoss = change != null && maxLossItem && item.dataKey === maxLossItem.dataKey
-          const isBold = isBoldGain || isBoldLoss
-          const isUp = change != null && change > 0
-          const isDown = change != null && change < 0
-
-          return (
-            <div key={item.dataKey} className="flex items-center justify-between gap-3 text-xs">
-              <span className="text-muted-foreground truncate">{item.dataKey}</span>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={isBold ? 'font-bold' : 'font-medium'}>
-                  {formatCurrency(current)}
-                </span>
-                {change != null && (
-                  <span className={`text-xs ${isBold ? 'font-bold' : 'font-medium'} ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
-                    {isUp ? '+' : ''}{formatCurrency(change)}
-                  </span>
-                )}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+      <h3 className="font-semibold mb-4">Individual Asset &amp; Liability Trends</h3>
+      {data.length === 0 ? (
+        <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
+          <div className="text-center">
+            <Landmark className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p>No snapshots yet.</p>
+          </div>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={220}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+            <YAxis tickFormatter={v => formatCurrency(v, true)} tick={{ fontSize: 11 }} />
+            <Tooltip content={<DetailTooltip />} />
+            {assetNames.map((name, i) => (
+              <Line key={name} type="monotone" dataKey={name} stroke={GREEN_SHADES[i % GREEN_SHADES.length]} strokeWidth={1.5} dot={false} name={name} />
+            ))}
+            {liabNames.map((name, i) => (
+              <Line key={name} type="monotone" dataKey={name} stroke={RED_SHADES[i % RED_SHADES.length]} strokeWidth={1.5} dot={false} name={name} />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   )
 }
@@ -471,32 +508,11 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Per-item trend lines */}
-        <div className="lg:col-span-2 bg-card border border-border rounded-xl p-5">
-          <h3 className="font-semibold mb-4">Individual Asset &amp; Liability Trends</h3>
-          {detailLineData.length === 0 ? (
-            <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
-              <div className="text-center">
-                <Landmark className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No snapshots yet.</p>
-              </div>
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={detailLineData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tickFormatter={v => formatCurrency(v, true)} tick={{ fontSize: 11 }} />
-                <Tooltip content={<DetailLineTooltip />} />
-                {detailAssetNames.map((name, i) => (
-                  <Line key={name} type="monotone" dataKey={name} stroke={GREEN_SHADES[i % GREEN_SHADES.length]} strokeWidth={1.5} dot={false} name={name} />
-                ))}
-                {detailLiabNames.map((name, i) => (
-                  <Line key={name} type="monotone" dataKey={name} stroke={RED_SHADES[i % RED_SHADES.length]} strokeWidth={1.5} dot={false} name={name} />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          )}
-        </div>
+        <DetailTrendChart
+          data={detailLineData}
+          assetNames={detailAssetNames}
+          liabNames={detailLiabNames}
+        />
 
         {/* Asset & liability composition pie */}
         <div className="bg-card border border-border rounded-xl p-5">
