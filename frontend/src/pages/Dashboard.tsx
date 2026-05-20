@@ -65,6 +65,71 @@ function BreakdownTooltip({ items, pos }: { items: BreakdownItem[]; pos: { x: nu
   )
 }
 
+function DetailLineTooltip({ active, payload, label, position }: any) {
+  if (!active || !payload || !payload.length) return null
+
+  const items = payload.filter((p: any) => !p.dataKey.startsWith('_prev_'))
+  if (items.length === 0) return null
+
+  // Calculate changes for each item
+  const changes = items.map((item: any) => {
+    const current = item.value
+    const prev = item.payload[`_prev_${item.dataKey}`]
+    const change = prev != null && prev !== 0 ? current - prev : null
+    return { ...item, change, prev }
+  }).sort((a: any, b: any) => {
+    const aChange = a.change ?? 0
+    const bChange = b.change ?? 0
+    return Math.abs(bChange) - Math.abs(aChange)
+  })
+
+  const maxGainItem = changes.find((c: any) => c.change != null && c.change > 0)
+  const maxLossItem = changes.find((c: any) => c.change != null && c.change < 0)
+
+  const posX = position?.x ?? 0
+  const posY = position?.y ?? 0
+
+  return (
+    <div
+      className="fixed z-50 pointer-events-none w-80 border border-border rounded-xl shadow-2xl p-3"
+      style={{
+        backgroundColor: 'hsl(222 47% 14%)',
+        left: `${posX + 10}px`,
+        top: `${posY - 10}px`,
+      }}
+    >
+      <p className="text-xs text-muted-foreground font-medium mb-2">{label}</p>
+      <div className="space-y-1">
+        {changes.map((item: any) => {
+          const current = item.value
+          const change = item.change
+          const isBoldGain = change != null && maxGainItem && item.dataKey === maxGainItem.dataKey
+          const isBoldLoss = change != null && maxLossItem && item.dataKey === maxLossItem.dataKey
+          const isBold = isBoldGain || isBoldLoss
+          const isUp = change != null && change > 0
+          const isDown = change != null && change < 0
+
+          return (
+            <div key={item.dataKey} className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-muted-foreground truncate">{item.dataKey}</span>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className={isBold ? 'font-bold' : 'font-medium'}>
+                  {formatCurrency(current)}
+                </span>
+                {change != null && (
+                  <span className={`text-xs ${isBold ? 'font-bold' : 'font-medium'} ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
+                    {isUp ? '+' : ''}{formatCurrency(change)}
+                  </span>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function StatCard({ label, value, rawValue, prevValue, sub, color, items }: {
   label: string; value: string; rawValue?: number; prevValue?: number | null
   sub?: string; color?: string; items?: BreakdownItem[]
@@ -174,9 +239,14 @@ export default function Dashboard() {
     }
   }
 
-  const detailLineData = detailSnaps.map(snap => {
-    const row: Record<string, number | string> = { month: formatMonth(snap.date) }
-    for (const item of snap.items) row[item.name] = item.value
+  const detailLineData = detailSnaps.map((snap, index) => {
+    const row: Record<string, number | string | Record<string, number | string>> = { month: formatMonth(snap.date) }
+    const prevSnap = index > 0 ? detailSnaps[index - 1] : null
+    const prevMap = prevSnap ? Object.fromEntries(prevSnap.items.map(i => [i.name, i.value])) : {}
+    for (const item of snap.items) {
+      row[item.name] = item.value
+      row[`_prev_${item.name}`] = prevMap[item.name] ?? null
+    }
     return row
   })
 
@@ -416,7 +486,7 @@ export default function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                 <YAxis tickFormatter={v => formatCurrency(v, true)} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(val: number, name: string) => [formatCurrency(val), name]} contentStyle={TOOLTIP_STYLE} labelStyle={TOOLTIP_LABEL_STYLE} itemStyle={TOOLTIP_ITEM_STYLE} />
+                <Tooltip content={<DetailLineTooltip />} />
                 {detailAssetNames.map((name, i) => (
                   <Line key={name} type="monotone" dataKey={name} stroke={GREEN_SHADES[i % GREEN_SHADES.length]} strokeWidth={1.5} dot={false} name={name} />
                 ))}
