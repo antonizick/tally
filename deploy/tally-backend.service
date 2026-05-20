@@ -1,0 +1,19 @@
+[Unit]
+Description=Tally Finance Backend
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=tally
+Group=tally
+WorkingDirectory=/opt/tally/backend
+EnvironmentFile=/opt/tally/backend/.env
+ExecStart=/opt/tally/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1 --log-level info
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/var/log/tally/backend.log
+StandardError=append:/var/log/tally/backend.log
+
+[Install]
+WantedBy=multi-user.target
