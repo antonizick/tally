@@ -101,7 +101,7 @@ function DetailTrendChart({ data, assetNames, liabNames }: {
           top: `${cursorPos.y - 10}px`,
         }}
       >
-        <p className="text-xs text-muted-foreground font-medium mb-2">{label}</p>
+        <p className="text-xs text-white font-medium mb-2">{label}</p>
         <div className="space-y-1">
           {changes.map((item: any) => {
             const current = item.value
@@ -119,7 +119,7 @@ function DetailTrendChart({ data, assetNames, liabNames }: {
                   <span className={isBold ? 'font-bold' : 'font-medium'}>
                     {formatCurrency(current)}
                   </span>
-                  {change != null && (
+                  {change != null && change !== 0 && (
                     <span className={`text-xs ${isBold ? 'font-bold' : 'font-medium'} ${isUp ? 'text-emerald-400' : isDown ? 'text-rose-400' : 'text-muted-foreground'}`}>
                       {isUp ? '+' : ''}{formatCurrency(change)}
                     </span>
