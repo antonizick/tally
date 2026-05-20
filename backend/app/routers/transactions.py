@@ -108,7 +108,10 @@ async def review_queue(db: AsyncSession = Depends(get_db)):
     items = [await _build_tx_read(tx, db) for tx in txs]
     pending_count = (
         await db.execute(
-            select(func.count(Transaction.id)).where(Transaction.review_status == "pending")
+            select(func.count(Transaction.id)).where(
+                Transaction.review_status == "pending",
+                Transaction.date >= "2026-05-01",
+            )
         )
     ).scalar_one()
     return {"pending_count": pending_count, "items": items}

@@ -82,6 +82,15 @@ export const displayConfigApi = {
     api.put('/api/display-config/', data).then(r => r.data),
 }
 
+// ---- Stock Holdings ----
+export const stockHoldingsApi = {
+  list: () => api.get('/api/stock-holdings/').then(r => r.data),
+  create: (data: Record<string, unknown>) => api.post('/api/stock-holdings/', data).then(r => r.data),
+  update: (id: number, data: Record<string, unknown>) => api.patch(`/api/stock-holdings/${id}`, data).then(r => r.data),
+  delete: (id: number) => api.delete(`/api/stock-holdings/${id}`).then(r => r.data),
+  portfolioTrend: () => api.get('/api/stock-holdings/portfolio-trend').then(r => r.data),
+}
+
 // ---- Upload ----
 export const uploadApi = {
   csv: (formData: FormData) => api.post('/api/upload/csv', formData, {
@@ -90,4 +99,19 @@ export const uploadApi = {
   confirmMapping: (formData: FormData) => api.post('/api/upload/csv/confirm-mapping', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then(r => r.data),
+}
+
+// ---- Admin ----
+export const adminApi = {
+  backup: () => api.post('/api/admin/backup').then(r => r.data),
+  listBackups: () => api.get('/api/admin/backups').then(r => r.data),
+  downloadUrl: (filename: string) => `${BASE}/api/admin/backup/download/${encodeURIComponent(filename)}`,
+  restore: (file: File) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return api.post('/api/admin/restore', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then(r => r.data)
+  },
+  reset: () => api.post('/api/admin/reset').then(r => r.data),
 }

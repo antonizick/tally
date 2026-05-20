@@ -68,6 +68,16 @@ async def dashboard_summary(
     )
     latest_snapshot = snap_result.scalar_one_or_none()
 
+    # Previous snapshot: most recent one strictly before period_start
+    prev_snap_result = await db.execute(
+        select(MonthlySnapshot)
+        .options(selectinload(MonthlySnapshot.items))
+        .where(MonthlySnapshot.effective_date < period_start)
+        .order_by(MonthlySnapshot.effective_date.desc())
+        .limit(1)
+    )
+    prev_snapshot = prev_snap_result.scalar_one_or_none()
+
     net_worth_views = []
     if latest_snapshot:
         views_result = await db.execute(
@@ -76,10 +86,13 @@ async def dashboard_summary(
             .order_by(NetWorthView.display_order)
         )
         for view in views_result.scalars().all():
+            current_val = compute_view(view, latest_snapshot)
+            prev_val = compute_view(view, prev_snapshot) if prev_snapshot else None
             net_worth_views.append({
                 "id": view.id,
                 "name": view.name,
-                "value": compute_view(view, latest_snapshot),
+                "value": current_val,
+                "prev_value": prev_val,
                 "items": _view_items(view, latest_snapshot),
             })
 
@@ -153,6 +166,11 @@ async def dashboard_summary(
         )
     ).scalar_one()
 
+    total_assets = sum(i.value for i in latest_snapshot.items if i.is_asset) if latest_snapshot else 0
+    total_liabilities = sum(i.value for i in latest_snapshot.items if not i.is_asset) if latest_snapshot else 0
+    prev_total_assets = sum(i.value for i in prev_snapshot.items if i.is_asset) if prev_snapshot else None
+    prev_total_liabilities = sum(i.value for i in prev_snapshot.items if not i.is_asset) if prev_snapshot else None
+
     asset_items = sorted(
         [{"name": i.name, "value": float(i.value), "is_asset": True} for i in latest_snapshot.items if i.is_asset],
         key=lambda x: -x["value"],
@@ -167,8 +185,10 @@ async def dashboard_summary(
         "period_end": str(period_end),
         "net_worth_views": net_worth_views,
         "latest_snapshot_date": str(latest_snapshot.effective_date) if latest_snapshot else None,
-        "total_assets": sum(i.value for i in latest_snapshot.items if i.is_asset) if latest_snapshot else 0,
-        "total_liabilities": sum(i.value for i in latest_snapshot.items if not i.is_asset) if latest_snapshot else 0,
+        "total_assets": total_assets,
+        "total_liabilities": total_liabilities,
+        "prev_total_assets": float(prev_total_assets) if prev_total_assets is not None else None,
+        "prev_total_liabilities": float(prev_total_liabilities) if prev_total_liabilities is not None else None,
         "asset_items": asset_items,
         "liability_items": liability_items,
         "period_expenses": float(summary.expenses or 0),

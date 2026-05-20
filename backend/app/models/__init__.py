@@ -6,6 +6,8 @@ from app.models.snapshot import MonthlySnapshot, SnapshotItem
 from app.models.net_worth import NetWorthView
 from app.models.recurring import RecurringBill
 from app.models.setting import Setting
+from app.models.stock_holding import StockHolding
+from app.models.stock_price import StockPriceHistory
 
 __all__ = [
     "Account", "SchemaMapping",
@@ -15,4 +17,6 @@ __all__ = [
     "NetWorthView",
     "RecurringBill",
     "Setting",
+    "StockHolding",
+    "StockPriceHistory",
 ]
