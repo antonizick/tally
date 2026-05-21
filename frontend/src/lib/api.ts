@@ -101,6 +101,25 @@ export const uploadApi = {
   }).then(r => r.data),
 }
 
+// ---- Checklist ----
+export const checklistApi = {
+  listStatuses: () => api.get('/api/checklist/statuses').then(r => r.data),
+  createStatus: (data: Record<string, unknown>) => api.post('/api/checklist/statuses', data).then(r => r.data),
+  updateStatus: (id: number, data: Record<string, unknown>) => api.put(`/api/checklist/statuses/${id}`, data).then(r => r.data),
+  deleteStatus: (id: number) => api.delete(`/api/checklist/statuses/${id}`).then(r => r.data),
+
+  listTemplates: () => api.get('/api/checklist/templates').then(r => r.data),
+  createTemplate: (data: Record<string, unknown>) => api.post('/api/checklist/templates', data).then(r => r.data),
+  updateTemplate: (id: number, data: Record<string, unknown>) => api.put(`/api/checklist/templates/${id}`, data).then(r => r.data),
+  deleteTemplate: (id: number) => api.delete(`/api/checklist/templates/${id}`).then(r => r.data),
+
+  listEntries: (snapshotId: number) => api.get('/api/checklist/entries', { params: { snapshot_id: snapshotId } }).then(r => r.data),
+  createEntry: (data: Record<string, unknown>) => api.post('/api/checklist/entries', data).then(r => r.data),
+  updateEntry: (id: number, data: Record<string, unknown>) => api.patch(`/api/checklist/entries/${id}`, data).then(r => r.data),
+  deleteEntry: (id: number) => api.delete(`/api/checklist/entries/${id}`).then(r => r.data),
+  seedEntries: (snapshotId: number) => api.post(`/api/checklist/entries/seed/${snapshotId}`).then(r => r.data),
+}
+
 // ---- Admin ----
 export const adminApi = {
   backup: () => api.post('/api/admin/backup').then(r => r.data),

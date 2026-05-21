@@ -5,6 +5,7 @@ import * as Tabs from '@radix-ui/react-tabs'
 import { accountsApi, categoriesApi, tagsApi, netWorthApi, stockHoldingsApi } from '@/lib/api'
 import CategoriesManager from '@/components/settings/CategoriesManager'
 import AdminTab from '@/components/settings/AdminTab'
+import ChecklistManager from '@/components/checklist/ChecklistManager'
 
 interface Account {
   id: number
@@ -106,6 +107,16 @@ export default function Settings() {
           }`}
         >
           General
+        </button>
+        <button
+          onClick={() => setActiveTab('checklist')}
+          className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+            activeTab === 'checklist'
+              ? 'border-primary text-foreground'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          Checklist
         </button>
         <button
           onClick={() => setActiveTab('admin')}
@@ -374,6 +385,12 @@ export default function Settings() {
           <p>100% open-source · No telemetry · No cloud</p>
         </div>
       </section>
+        </div>
+      )}
+
+      {activeTab === 'checklist' && (
+        <div className="max-w-3xl">
+          <ChecklistManager />
         </div>
       )}
 

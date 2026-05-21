@@ -7,6 +7,7 @@ from app.routers import upload, accounts, transactions, categories, snapshots, n
 from app.routers import display_config
 from app.routers import stock_holdings
 from app.routers import admin
+from app.routers import checklist
 
 
 @asynccontextmanager
@@ -42,6 +43,7 @@ app.include_router(tags.router)
 app.include_router(display_config.router)
 app.include_router(stock_holdings.router)
 app.include_router(admin.router)
+app.include_router(checklist.router)
 
 
 @app.get("/health")

@@ -8,6 +8,7 @@ from app.models.recurring import RecurringBill
 from app.models.setting import Setting
 from app.models.stock_holding import StockHolding
 from app.models.stock_price import StockPriceHistory
+from app.models.checklist import ChecklistStatus, ChecklistTemplate, ChecklistEntry
 
 __all__ = [
     "Account", "SchemaMapping",
@@ -19,4 +20,5 @@ __all__ = [
     "Setting",
     "StockHolding",
     "StockPriceHistory",
+    "ChecklistStatus", "ChecklistTemplate", "ChecklistEntry",
 ]

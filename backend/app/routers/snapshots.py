@@ -7,6 +7,7 @@ import httpx
 
 from app.database import get_db
 from app.models import MonthlySnapshot, SnapshotItem
+from app.models.checklist import ChecklistTemplate, ChecklistEntry
 from app.schemas.snapshot import MonthlySnapshotCreate, MonthlySnapshotRead, MonthlySnapshotUpdate, SnapshotItemRead
 
 router = APIRouter(prefix="/api/snapshots", tags=["snapshots"])
@@ -82,6 +83,21 @@ async def create_snapshot(body: MonthlySnapshotCreate, db: AsyncSession = Depend
     for item_data in body.items:
         item = SnapshotItem(snapshot_id=snap.id, **item_data.model_dump())
         db.add(item)
+
+    # Seed checklist entries from active templates
+    templates_result = await db.execute(
+        select(ChecklistTemplate)
+        .where(ChecklistTemplate.is_active == True)
+        .order_by(ChecklistTemplate.sort_order, ChecklistTemplate.id)
+    )
+    for tmpl in templates_result.scalars().all():
+        entry = ChecklistEntry(
+            snapshot_id=snap.id,
+            template_id=tmpl.id,
+            label=tmpl.label,
+            sort_order=tmpl.sort_order,
+        )
+        db.add(entry)
 
     await db.commit()
     await db.refresh(snap)

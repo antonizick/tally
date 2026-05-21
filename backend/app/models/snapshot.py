@@ -18,6 +18,9 @@ class MonthlySnapshot(Base):
     items: Mapped[list["SnapshotItem"]] = relationship(
         back_populates="snapshot", cascade="all, delete-orphan"
     )
+    checklist_entries: Mapped[list["ChecklistEntry"]] = relationship(
+        back_populates="snapshot", cascade="all, delete-orphan"
+    )
 
 
 class SnapshotItem(Base):

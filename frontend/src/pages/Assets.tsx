@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { snapshotsApi, displayConfigApi } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import ChecklistTable from '@/components/checklist/ChecklistTable'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -874,6 +875,8 @@ export default function Assets() {
               <Plus className="w-4 h-4" /> Add Asset or Liability
             </button>
           )}
+
+          <ChecklistTable snapshotId={selected.id} />
         </div>
       ) : (
         <div className="lg:col-span-2 flex items-center justify-center text-muted-foreground py-24">
