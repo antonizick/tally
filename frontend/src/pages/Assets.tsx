@@ -13,7 +13,7 @@ import {
   RefreshCw, Copy, AlertTriangle, GripVertical, Minus,
 } from 'lucide-react'
 import { snapshotsApi, displayConfigApi } from '@/lib/api'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatCurrency, formatDate, formatMonth } from '@/lib/utils'
 import ChecklistTable from '@/components/checklist/ChecklistTable'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -799,6 +799,8 @@ export default function Assets() {
       {/* ── Right: snapshot detail ────────────────────────────────────────── */}
       {selected ? (
         <div className="lg:col-span-2 space-y-4">
+
+          <h2 className="text-2xl font-bold tracking-tight">{formatMonth(selected.effective_date)}</h2>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-card border border-border rounded-xl p-4 text-center">
