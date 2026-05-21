@@ -395,7 +395,7 @@ export default function Settings() {
       )}
 
       {activeTab === 'admin' && (
-        <div className="max-w-3xl">
+        <div className="max-w-5xl">
           <AdminTab />
         </div>
       )}

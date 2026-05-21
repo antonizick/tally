@@ -1,5 +1,5 @@
 """CSV upload endpoint with schema mapping workflow."""
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, UploadFile, File, Form, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import json
@@ -8,6 +8,7 @@ from app.database import get_db
 from app.models import Account, SchemaMapping
 from app.services.csv_ingestion import ingest_csv, get_or_create_account, parse_csv_bytes
 from app.services.schema_mapper import fingerprint_headers
+from app.services.backup import background_backup
 
 router = APIRouter(prefix="/api/upload", tags=["upload"])
 
@@ -30,11 +31,14 @@ async def upload_csv(
         filename=file.filename or "upload.csv",
         account_id=account_id,
     )
+    if result.get("status") == "complete":
+        background_tasks.add_task(background_backup, "Automated backup for CSV import")
     return result
 
 
 @router.post("/csv/confirm-mapping")
 async def confirm_mapping(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     account_id: int = Form(...),
     mapping: str = Form(...),
@@ -51,6 +55,8 @@ async def confirm_mapping(
         account_id=account_id,
         mapping_override=mapping_dict,
     )
+    if result.get("status") == "complete":
+        background_tasks.add_task(background_backup, "Automated backup for CSV import")
     return result
 
 

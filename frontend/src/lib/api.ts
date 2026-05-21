@@ -122,7 +122,7 @@ export const checklistApi = {
 
 // ---- Admin ----
 export const adminApi = {
-  backup: () => api.post('/api/admin/backup').then(r => r.data),
+  backup: (label?: string) => api.post('/api/admin/backup', { label: label ?? null }).then(r => r.data),
   listBackups: () => api.get('/api/admin/backups').then(r => r.data),
   downloadUrl: (filename: string) => `${BASE}/api/admin/backup/download/${encodeURIComponent(filename)}`,
   restore: (file: File) => {

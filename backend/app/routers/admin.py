@@ -1,7 +1,9 @@
 from pathlib import Path
+from typing import Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Body, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -13,10 +15,18 @@ from app.services.factory_reset import factory_reset
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
+class BackupRequest(BaseModel):
+    label: Optional[str] = None
+
+
 @router.post("/backup")
-async def do_backup(db: AsyncSession = Depends(get_db)):
+async def do_backup(
+    body: Optional[BackupRequest] = Body(default=None),
+    db: AsyncSession = Depends(get_db),
+):
+    label = body.label if body else None
     try:
-        return await create_backup(db)
+        return await create_backup(db, label=label)
     except Exception as e:
         raise HTTPException(500, f"Backup failed: {e}")
 

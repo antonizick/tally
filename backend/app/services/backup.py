@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 
+MAX_BACKUPS = 10
 
 EXPORT_TABLE_ORDER = [
     "accounts",
@@ -23,6 +24,9 @@ EXPORT_TABLE_ORDER = [
     "correction_history",
     "monthly_snapshots",
     "snapshot_items",
+    "checklist_statuses",
+    "checklist_templates",
+    "checklist_entries",
     "net_worth_views",
     "recurring_bills",
     "settings",
@@ -31,7 +35,7 @@ EXPORT_TABLE_ORDER = [
 ]
 
 
-async def create_backup(db: AsyncSession) -> dict:
+async def create_backup(db: AsyncSession, label: str | None = None) -> dict:
     ts = datetime.now(timezone.utc)
     filename = f"tally_backup_{ts.strftime('%Y%m%d_%H%M%S')}.tar.gz"
     dest = Path(settings.backups_dir) / filename
@@ -88,12 +92,31 @@ async def create_backup(db: AsyncSession) -> dict:
                 tar.add(p, arcname=f"json/{table}.json")
             tar.add(sql_file, arcname="sql/tally_dump.sql")
 
+    # Write sidecar metadata
+    clean_label = (label or "").strip()
+    meta_path = Path(settings.backups_dir) / f"{filename}.meta.json"
+    meta_path.write_text(json.dumps({"label": clean_label, "created_at": ts.isoformat()}))
+
+    # Prune to MAX_BACKUPS
+    _prune_backups()
+
     stat = dest.stat()
     return {
         "filename": filename,
         "filesize_bytes": stat.st_size,
         "timestamp": ts.isoformat(),
+        "label": clean_label,
     }
+
+
+def _prune_backups() -> None:
+    backups_dir = Path(settings.backups_dir)
+    files = sorted(backups_dir.glob("tally_backup_*.tar.gz"), key=lambda f: f.stat().st_mtime)
+    while len(files) > MAX_BACKUPS:
+        oldest = files.pop(0)
+        oldest.unlink(missing_ok=True)
+        meta = backups_dir / f"{oldest.name}.meta.json"
+        meta.unlink(missing_ok=True)
 
 
 def _sync_sql_dump(db_path: str) -> str:
@@ -117,14 +140,33 @@ def _checksum(path: Path) -> str:
     return f"sha256:{h.hexdigest()}"
 
 
+async def background_backup(label: str) -> None:
+    """Fire-and-forget backup for use with FastAPI BackgroundTasks."""
+    try:
+        from app.database import AsyncSessionLocal
+        async with AsyncSessionLocal() as db:
+            await create_backup(db, label=label)
+    except Exception:
+        pass
+
+
 def list_backups() -> list[dict]:
     backups_dir = Path(settings.backups_dir)
     result = []
     for f in sorted(backups_dir.glob("tally_backup_*.tar.gz"), reverse=True):
         stat = f.stat()
+        label = ""
+        meta_path = backups_dir / f"{f.name}.meta.json"
+        if meta_path.exists():
+            try:
+                meta = json.loads(meta_path.read_text())
+                label = meta.get("label", "")
+            except Exception:
+                pass
         result.append({
             "filename": f.name,
             "filesize_bytes": stat.st_size,
             "modified_at": datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat(),
+            "label": label,
         })
     return result

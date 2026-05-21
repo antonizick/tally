@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -9,6 +9,7 @@ from app.database import get_db
 from app.models import MonthlySnapshot, SnapshotItem
 from app.models.checklist import ChecklistTemplate, ChecklistEntry
 from app.schemas.snapshot import MonthlySnapshotCreate, MonthlySnapshotRead, MonthlySnapshotUpdate, SnapshotItemRead
+from app.services.backup import background_backup
 
 router = APIRouter(prefix="/api/snapshots", tags=["snapshots"])
 
@@ -71,7 +72,7 @@ async def get_snapshot(snapshot_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/", response_model=MonthlySnapshotRead)
-async def create_snapshot(body: MonthlySnapshotCreate, db: AsyncSession = Depends(get_db)):
+async def create_snapshot(body: MonthlySnapshotCreate, background_tasks: BackgroundTasks, db: AsyncSession = Depends(get_db)):
     eff_date = body.effective_date if isinstance(body.effective_date, date) else date.fromisoformat(str(body.effective_date))
     snap = MonthlySnapshot(
         effective_date=eff_date,
@@ -108,6 +109,7 @@ async def create_snapshot(body: MonthlySnapshotCreate, db: AsyncSession = Depend
         .where(MonthlySnapshot.id == snap.id)
     )
     snap = result.scalar_one()
+    background_tasks.add_task(background_backup, "Automated backup for monthly snapshot")
     return _compute_totals(snap)
 
 
