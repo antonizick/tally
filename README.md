@@ -25,10 +25,14 @@ curl -fsSL https://raw.githubusercontent.com/antonizick/tally/main/install.sh | 
 - ✓ Clones Tally from this repo to `/opt/tally`
 - ✓ Builds the backend (Python venv) and frontend (React)
 - ✓ Configures nginx as reverse proxy (port 80)
-- ✓ Sets up systemd service for auto-start/restart
+- ✓ Sets up systemd service for auto-start/restart (or creates manual startup script if systemd unavailable)
 - ✓ Optionally installs Ollama for AI categorization
 - ✓ Seeds the database with sample data
-- ✓ Starts services and prints access URL
+- ✓ Prints access URL and service management instructions
+
+**Environments:**
+- **systemd-enabled systems** (standard Ubuntu/Debian servers): Auto-starts Tally, auto-restarts on crash, managed via `systemctl`
+- **Non-systemd environments** (containers, WSL, custom init systems): Installer detects this and creates a manual startup script instead. See `./start-tally.sh` or follow the printed instructions.
 
 **After installation:** Access your Tally instance at `http://your-server-ip`
 

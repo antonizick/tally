@@ -257,29 +257,81 @@ setup_frontend() {
 }
 
 # ============================================================================
-# STEP 8: Setup systemd service
+# STEP 7.5: Check for systemd availability
+# ============================================================================
+check_systemd() {
+    # Check if systemd is the init system (PID 1)
+    if [[ -e /run/systemd/system ]] && systemctl --version >/dev/null 2>&1; then
+        return 0  # systemd is available
+    else
+        return 1  # systemd not available
+    fi
+}
+
+# ============================================================================
+# STEP 8: Setup systemd service (or manual startup)
 # ============================================================================
 setup_systemd() {
-    log_info "Setting up systemd service..."
+    if check_systemd; then
+        log_info "Setting up systemd service..."
 
-    cp "$INSTALL_DIR/deploy/tally-backend.service" /etc/systemd/system/
-    systemctl daemon-reload
+        cp "$INSTALL_DIR/deploy/tally-backend.service" /etc/systemd/system/
+        systemctl daemon-reload
 
-    systemctl enable tally-backend >/dev/null 2>&1
-    systemctl start tally-backend
+        systemctl enable tally-backend >/dev/null 2>&1
+        systemctl start tally-backend
 
-    log_info "Waiting for backend to start..."
-    local max_attempts=15
-    local attempts=0
-    while ! curl -sf http://127.0.0.1:8000/health >/dev/null 2>&1; do
-        attempts=$((attempts + 1))
-        if [[ $attempts -ge $max_attempts ]]; then
-            log_error "Backend failed to start. Check logs: journalctl -u tally-backend -n 20"
-            exit 1
-        fi
-        sleep 1
-    done
-    log_success "Backend is running"
+        log_info "Waiting for backend to start..."
+        local max_attempts=15
+        local attempts=0
+        while ! curl -sf http://127.0.0.1:8000/health >/dev/null 2>&1; do
+            attempts=$((attempts + 1))
+            if [[ $attempts -ge $max_attempts ]]; then
+                log_error "Backend failed to start. Check logs: journalctl -u tally-backend -n 20"
+                exit 1
+            fi
+            sleep 1
+        done
+        log_success "Backend is running"
+        SYSTEMD_AVAILABLE=true
+    else
+        log_warn "systemd not detected in this environment"
+        log_info "Tally will run in manual mode. See startup instructions below."
+        SYSTEMD_AVAILABLE=false
+
+        # Create a helper script for manual startup
+        cat > "$INSTALL_DIR/start-tally.sh" <<'SCRIPT'
+#!/bin/bash
+# Manual startup script for Tally (when systemd is not available)
+set -e
+
+INSTALL_DIR="/opt/tally"
+DATA_DIR="/var/lib/tally"
+TALLY_USER="tally"
+
+echo "Starting Tally backend..."
+sudo -u $TALLY_USER $INSTALL_DIR/backend/.venv/bin/uvicorn \
+    app.main:app \
+    --host 0.0.0.0 \
+    --port 8000 \
+    --log-config "$INSTALL_DIR/backend/logging_config.yaml" &
+
+BACKEND_PID=$!
+echo "Backend PID: $BACKEND_PID"
+
+sleep 3
+
+echo "Starting Tally frontend (nginx)..."
+nginx -g "daemon off;" &
+NGINX_PID=$!
+echo "Nginx PID: $NGINX_PID"
+
+# Wait for processes
+wait
+SCRIPT
+        chmod +x "$INSTALL_DIR/start-tally.sh"
+        log_success "Manual startup script created at $INSTALL_DIR/start-tally.sh"
+    fi
 }
 
 # ============================================================================
@@ -301,8 +353,13 @@ setup_nginx() {
         die "Nginx configuration is invalid. Check: nginx -t"
     fi
 
-    systemctl reload nginx
-    log_success "Nginx configured and reloaded"
+    if check_systemd; then
+        systemctl reload nginx
+    else
+        # In non-systemd environments, nginx must be running manually or stopped
+        log_warn "Nginx configured, but systemctl not available. Nginx will be started manually."
+    fi
+    log_success "Nginx configured"
 }
 
 # ============================================================================
@@ -341,15 +398,35 @@ print_summary() {
     echo ""
     echo "API documentation: http://$server_ip/docs"
     echo ""
-    echo "Service management:"
-    echo "  Start:   sudo systemctl start tally-backend"
-    echo "  Stop:    sudo systemctl stop tally-backend"
-    echo "  Restart: sudo systemctl restart tally-backend"
-    echo "  Status:  sudo systemctl status tally-backend"
-    echo ""
-    echo "Logs:"
-    echo "  Backend: sudo tail -f /var/log/tally/backend.log"
-    echo "  System:  sudo journalctl -u tally-backend -f"
+
+    if [[ "$SYSTEMD_AVAILABLE" == "true" ]]; then
+        echo "Service management (systemd):"
+        echo "  Start:   sudo systemctl start tally-backend"
+        echo "  Stop:    sudo systemctl stop tally-backend"
+        echo "  Restart: sudo systemctl restart tally-backend"
+        echo "  Status:  sudo systemctl status tally-backend"
+        echo ""
+        echo "Logs:"
+        echo "  Backend: sudo tail -f /var/log/tally/backend.log"
+        echo "  System:  sudo journalctl -u tally-backend -f"
+    else
+        echo -e "${YELLOW}⚠ Manual startup required (systemd not available)${NC}"
+        echo ""
+        echo "To start Tally manually:"
+        echo "  sudo bash $INSTALL_DIR/start-tally.sh"
+        echo ""
+        echo "Or start individual services:"
+        echo "  Backend:"
+        echo "    sudo -u tally $INSTALL_DIR/backend/.venv/bin/uvicorn \\"
+        echo "      app.main:app --host 0.0.0.0 --port 8000"
+        echo ""
+        echo "  Frontend (nginx):"
+        echo "    sudo nginx -g \"daemon off;\""
+        echo ""
+        echo "Logs:"
+        echo "  Backend: see uvicorn output above"
+        echo "  Nginx:   sudo tail -f /var/log/nginx/access.log"
+    fi
     echo ""
     echo "Uninstall:"
     echo "  sudo bash $INSTALL_DIR/uninstall.sh"
