@@ -530,7 +530,14 @@ export default function Assets() {
     },
   })
 
-  const selected = snapshots.find(s => s.id === selectedSnapshotId) ?? snapshots[0] ?? null
+  const currentMonthSnapshot = snapshots.find(s => {
+    const [year, month] = s.effective_date.split('-').slice(0, 2)
+    const today = new Date()
+    return parseInt(year) === today.getFullYear() &&
+           parseInt(month) === today.getMonth() + 1
+  })
+
+  const selected = snapshots.find(s => s.id === selectedSnapshotId) ?? currentMonthSnapshot ?? snapshots[0] ?? null
 
   const createMutation = useMutation({
     mutationFn: (data: Record<string, unknown>) => snapshotsApi.create(data),

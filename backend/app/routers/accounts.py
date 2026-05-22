@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/accounts", tags=["accounts"])
 
 @router.get("/", response_model=list[AccountRead])
 async def list_accounts(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Account).order_by(Account.name))
+    result = await db.execute(select(Account).where(Account.is_active == True).order_by(Account.name))
     return result.scalars().all()
 
 
