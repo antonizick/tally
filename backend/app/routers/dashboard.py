@@ -145,7 +145,6 @@ async def dashboard_summary(
         .where(and_(*top_cat_filters))
         .group_by(Category.id, Category.name, Category.color, Category.parent_id, ParentCat.name)
         .order_by(func.sum(Transaction.amount).asc())
-        .limit(8)
     )
     top_categories = [
         {
