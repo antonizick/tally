@@ -147,3 +147,28 @@ npm run dev                          # UI at :5173
 ```
 
 API docs: http://localhost:8000/docs
+
+## Security
+
+### Phase 1: SQL Injection Prevention (2026-05-22) ✅
+
+Implemented parameterized query fixes to prevent SQL injection vulnerabilities:
+
+- **FIX #1:** Converted analytics queries to use parameterized statements
+  - `spending_by_category()` — Date filters, account/category IDs
+  - `monthly_spending_trend()` — Month range, account IDs
+  - `pivot_transactions()` — Date range, account/category IDs
+  
+- **FIX #2:** Added SQLite path validation
+  - Validates path is within expected data directory
+  - Prevents directory traversal attacks
+  - Confirms file exists before loading
+
+**Status:** All fixes tested and verified on running backend.
+
+For detailed security audit and remediation roadmap, see [SECURITY_REVIEW.md](SECURITY_REVIEW.md).
+
+### Security Roadmap
+
+**Phase 2 (pending):** JSON-based backup restore with input validation  
+**Phase 3 (pending):** Authentication/authorization layer, encryption at rest, CORS hardening
