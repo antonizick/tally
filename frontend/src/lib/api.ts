@@ -132,5 +132,6 @@ export const adminApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     }).then(r => r.data)
   },
+  restoreFromBackup: (filename: string) => api.post(`/api/admin/restore/from-backup/${encodeURIComponent(filename)}`).then(r => r.data),
   reset: () => api.post('/api/admin/reset').then(r => r.data),
 }

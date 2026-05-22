@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, Archive, Download } from 'lucide-react'
+import { AlertCircle, Archive, Download, RotateCcw } from 'lucide-react'
 import { adminApi } from '@/lib/api'
 
 interface BackupEntry {
@@ -26,6 +26,10 @@ export default function AdminTab() {
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
   const [restoreSuccess, setRestoreSuccess] = useState(false)
+
+  // Restore from backup history state
+  const [restoreFromBackupFilename, setRestoreFromBackupFilename] = useState<string | null>(null)
+  const [showRestoreFromHistoryConfirm, setShowRestoreFromHistoryConfirm] = useState(false)
 
   // Reset state
   const [showResetDialog1, setShowResetDialog1] = useState(false)
@@ -55,6 +59,16 @@ export default function AdminTab() {
       setRestoreSuccess(true)
       setRestoreFile(null)
       setShowRestoreConfirm(false)
+      qc.invalidateQueries()
+    },
+  })
+
+  const restoreFromBackupMutation = useMutation({
+    mutationFn: (filename: string) => adminApi.restoreFromBackup(filename),
+    onSuccess: () => {
+      setRestoreSuccess(true)
+      setRestoreFromBackupFilename(null)
+      setShowRestoreFromHistoryConfirm(false)
       qc.invalidateQueries()
     },
   })
@@ -233,7 +247,7 @@ export default function AdminTab() {
           ) : (
             <ol className="space-y-3">
               {backups.map((b, idx) => (
-                <li key={b.filename} className="flex items-start gap-2 text-sm">
+                <li key={b.filename} className="flex items-start gap-2 text-sm border border-border rounded-lg p-3">
                   <span className="text-xs text-muted-foreground font-mono w-5 flex-shrink-0 pt-0.5 text-right">
                     {idx + 1}.
                   </span>
@@ -249,15 +263,30 @@ export default function AdminTab() {
                       {formatDate(b.modified_at)}
                     </div>
                     <div className="text-xs text-muted-foreground">{formatBytes(b.filesize_bytes)}</div>
+                    <div className="flex gap-1 mt-2">
+                      <button
+                        onClick={() => {
+                          setRestoreFromBackupFilename(b.filename)
+                          setShowRestoreFromHistoryConfirm(true)
+                        }}
+                        disabled={restoreFromBackupMutation.isPending}
+                        className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium hover:opacity-90 disabled:opacity-50 flex items-center gap-1"
+                        title="Restore from this backup"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        Restore
+                      </button>
+                      <a
+                        href={adminApi.downloadUrl(b.filename)}
+                        download={b.label ? `${b.label}.tar.gz` : b.filename}
+                        className="text-muted-foreground hover:text-foreground flex-shrink-0 flex items-center gap-1 px-2 py-1 hover:bg-muted rounded text-xs"
+                        title="Download"
+                      >
+                        <Download className="w-3 h-3" />
+                        <span>Download</span>
+                      </a>
+                    </div>
                   </div>
-                  <a
-                    href={adminApi.downloadUrl(b.filename)}
-                    download={b.label ? `${b.label}.tar.gz` : b.filename}
-                    className="text-muted-foreground hover:text-foreground flex-shrink-0 pt-0.5"
-                    title="Download"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </a>
                 </li>
               ))}
             </ol>
@@ -289,6 +318,40 @@ export default function AdminTab() {
                 className="flex-1 bg-primary text-primary-foreground rounded-lg py-2 text-sm font-medium hover:opacity-90"
               >
                 Restore
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Restore from Backup History Confirmation Dialog */}
+      {showRestoreFromHistoryConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-card border border-border rounded-xl shadow-2xl w-full max-w-sm mx-4 p-6 space-y-4">
+            <h3 className="font-semibold text-lg">Restore from Backup?</h3>
+            <p className="text-sm text-muted-foreground">
+              This will replace all your current data with data from the selected backup. All unsaved changes will be lost.
+            </p>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => {
+                  setShowRestoreFromHistoryConfirm(false)
+                  setRestoreFromBackupFilename(null)
+                }}
+                className="flex-1 bg-secondary text-foreground rounded-lg py-2 text-sm font-medium hover:bg-secondary/80"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (restoreFromBackupFilename) {
+                    restoreFromBackupMutation.mutate(restoreFromBackupFilename)
+                  }
+                }}
+                disabled={restoreFromBackupMutation.isPending}
+                className="flex-1 bg-primary text-primary-foreground rounded-lg py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
+              >
+                {restoreFromBackupMutation.isPending ? 'Restoring...' : 'Restore'}
               </button>
             </div>
           </div>

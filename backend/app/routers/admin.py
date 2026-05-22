@@ -69,6 +69,26 @@ async def do_restore(
         raise HTTPException(500, f"Restore failed: {e}")
 
 
+@router.post("/restore/from-backup/{filename}")
+async def do_restore_from_backup(
+    filename: str,
+    db: AsyncSession = Depends(get_db),
+):
+    if "/" in filename or "\\" in filename or ".." in filename:
+        raise HTTPException(400, "Invalid filename")
+    path = Path(settings.backups_dir) / filename
+    if not path.exists() or not path.suffix == ".gz":
+        raise HTTPException(404, "Backup not found")
+    try:
+        data = path.read_bytes()
+        result = await restore_from_upload(db, data)
+        return result
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except Exception as e:
+        raise HTTPException(500, f"Restore failed: {e}")
+
+
 @router.post("/reset")
 async def do_reset(db: AsyncSession = Depends(get_db)):
     try:
