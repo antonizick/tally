@@ -47,6 +47,17 @@ confirm() {
 }
 
 # ============================================================================
+# Check for systemd availability
+# ============================================================================
+check_systemd() {
+    if [[ -e /run/systemd/system ]] && systemctl --version >/dev/null 2>&1; then
+        return 0  # systemd is available
+    else
+        return 1  # systemd not available
+    fi
+}
+
+# ============================================================================
 # MAIN UNINSTALL
 # ============================================================================
 main() {
@@ -68,17 +79,43 @@ main() {
     fi
 
     # Stop and disable service
-    log_info "Stopping tally-backend service..."
-    systemctl stop tally-backend 2>/dev/null || true
-    systemctl disable tally-backend 2>/dev/null || true
-    rm -f /etc/systemd/system/tally-backend.service
-    systemctl daemon-reload
-    log_success "Service stopped and disabled"
+    log_info "Stopping Tally services..."
+
+    if check_systemd; then
+        # systemd environment
+        systemctl stop tally-backend 2>/dev/null || true
+        systemctl disable tally-backend 2>/dev/null || true
+        rm -f /etc/systemd/system/tally-backend.service
+        systemctl daemon-reload 2>/dev/null || true
+        log_success "systemd service stopped and disabled"
+    else
+        # Non-systemd environment - kill processes manually
+        if [[ -f "$LOG_DIR/backend.pid" ]]; then
+            local backend_pid=$(cat "$LOG_DIR/backend.pid" 2>/dev/null)
+            if [[ -n "$backend_pid" ]] && kill -0 "$backend_pid" 2>/dev/null; then
+                kill "$backend_pid" 2>/dev/null || true
+                log_success "Backend process terminated"
+            fi
+            rm -f "$LOG_DIR/backend.pid"
+        fi
+
+        # Kill any remaining uvicorn processes
+        pkill -f "uvicorn.*tally" 2>/dev/null || true
+
+        log_success "Services stopped (non-systemd mode)"
+    fi
 
     # Disable nginx
     log_info "Disabling nginx site..."
     rm -f /etc/nginx/sites-enabled/tally /etc/nginx/sites-available/tally
-    systemctl reload nginx 2>/dev/null || true
+
+    if check_systemd; then
+        systemctl reload nginx 2>/dev/null || true
+    else
+        # In non-systemd, nginx may be running as standalone process
+        # Try to reload if it's running, otherwise just clean up config
+        nginx -t >/dev/null 2>&1 && nginx -s reload 2>/dev/null || true
+    fi
     log_success "Nginx site removed"
 
     # Remove installation
