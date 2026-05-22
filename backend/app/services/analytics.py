@@ -78,12 +78,12 @@ def spending_by_category(
         result = conn.execute(f"""
             SELECT
                 COALESCE(category_name, 'Uncategorized') as category_name,
-                SUM(amount) as total,
+                SUM(ABS(amount)) as total,
                 COUNT(*) as tx_count
             FROM transactions_view
             WHERE {where}
             GROUP BY category_name
-            ORDER BY total ASC
+            ORDER BY total DESC
             LIMIT 20
         """, params).fetchall()
         return [{"category_name": r[0], "total": r[1], "count": r[2]} for r in result]

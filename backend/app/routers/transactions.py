@@ -35,6 +35,7 @@ async def _build_tx_read(tx: Transaction, db: AsyncSession) -> dict:
         "ai_category_suggestion": tx.ai_category_suggestion,
         "is_transfer": tx.is_transfer,
         "tags": tags,
+        "notes": tx.notes,
         "created_at": str(tx.created_at),
     }
 
@@ -154,6 +155,8 @@ async def update_transaction(tx_id: int, body: TransactionUpdate, db: AsyncSessi
         tx.review_status = body.review_status
     if body.is_transfer is not None:
         tx.is_transfer = body.is_transfer
+    if body.notes is not None:
+        tx.notes = body.notes
     if body.tag_ids is not None:
         # Replace all tags
         await db.execute(

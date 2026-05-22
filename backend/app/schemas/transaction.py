@@ -28,6 +28,7 @@ class TransactionRead(BaseModel):
     ai_category_suggestion: str | None
     is_transfer: bool
     tags: list[TagRead] = []
+    notes: str | None = None
     created_at: datetime | str
 
     model_config = {"from_attributes": True}
@@ -39,6 +40,7 @@ class TransactionUpdate(BaseModel):
     review_status: str | None = None
     is_transfer: bool | None = None
     tag_ids: list[int] | None = None
+    notes: str | None = None
 
 
 class ImportBatchRead(BaseModel):

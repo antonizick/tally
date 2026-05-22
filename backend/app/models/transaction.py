@@ -41,6 +41,7 @@ class Transaction(Base):
     transfer_pair_id: Mapped[int | None] = mapped_column(ForeignKey("transactions.id"))
     raw_source: Mapped[dict | None] = mapped_column(JSON)
     dedup_hash: Mapped[str | None] = mapped_column(String(64), index=True)
+    notes: Mapped[str | None] = mapped_column(String(1000))
     created_at: Mapped[str] = mapped_column(DateTime, server_default=func.now())
 
     account: Mapped["Account"] = relationship(back_populates="transactions")

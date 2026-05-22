@@ -5,7 +5,7 @@ import {
   useReactTable, getCoreRowModel, getSortedRowModel,
   flexRender, type ColumnDef, type SortingState,
 } from '@tanstack/react-table'
-import { CheckCircle, ChevronDown, ChevronUp, ChevronsUpDown, Filter } from 'lucide-react'
+import { CheckCircle, ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react'
 import { transactionsApi, categoriesApi } from '@/lib/api'
 import { formatCurrency, formatDate, cn, amountColor, confidenceColor, getFirstLastOfMonth } from '@/lib/utils'
 
@@ -22,6 +22,7 @@ interface Transaction {
   ai_category_suggestion: string | null
   is_transfer: boolean
   tags: Array<{ id: number; name: string; color: string | null }>
+  notes: string | null
 }
 
 interface Category {
@@ -78,7 +79,7 @@ export default function Transactions() {
   const flatCats = flatCategories(categories)
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, ...body }: { id: number; category_id?: number; review_status?: string }) =>
+    mutationFn: ({ id, ...body }: { id: number; category_id?: number; review_status?: string; notes?: string | null }) =>
       transactionsApi.update(id, body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['transactions'] }),
   })
@@ -94,6 +95,27 @@ export default function Transactions() {
   const transactions: Transaction[] = data?.items || []
   const total = data?.total || 0
   const totalPages = Math.ceil(total / 50)
+
+  const shiftMonth = (delta: number) => {
+    const base = dateFrom ? new Date(dateFrom + 'T00:00:00') : new Date()
+    base.setDate(1)
+    base.setMonth(base.getMonth() + delta)
+    const first = new Date(base.getFullYear(), base.getMonth(), 1)
+    const last = new Date(base.getFullYear(), base.getMonth() + 1, 0)
+    setDateFrom(first.toISOString().slice(0, 10))
+    setDateTo(last.toISOString().slice(0, 10))
+    setPage(1)
+  }
+
+  const clearAllFilters = () => {
+    const { start, end } = getFirstLastOfMonth(0)
+    setDateFrom(start)
+    setDateTo(end)
+    setCategoryId('')
+    setReviewStatus('')
+    setSearch('')
+    setPage(1)
+  }
 
   const pendingIds = transactions
     .filter(t => t.review_status === 'pending')
@@ -154,6 +176,21 @@ export default function Transactions() {
       size: 180,
     },
     {
+      id: 'notes',
+      header: 'Notes',
+      cell: ({ row }) => (
+        <input
+          type="text"
+          value={row.original.notes || ''}
+          onChange={e => {
+            updateMutation.mutate({ id: row.original.id, notes: e.target.value || null })
+          }}
+          className="bg-input border border-border rounded px-2 py-1 text-xs w-full max-w-[200px]"
+        />
+      ),
+      size: 200,
+    },
+    {
       id: 'status',
       header: 'Status',
       cell: ({ row }) => {
@@ -211,6 +248,13 @@ export default function Transactions() {
     <div className="space-y-4">
       {/* Filters */}
       <div className="bg-card border border-border rounded-xl p-4 flex flex-wrap gap-3 items-end">
+        <button
+          onClick={() => shiftMonth(-1)}
+          className="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary hover:bg-accent transition-colors self-end mb-0.5"
+          title="Previous month"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
         <div>
           <label className="text-xs text-muted-foreground block mb-1">From</label>
           <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1) }}
@@ -221,6 +265,21 @@ export default function Transactions() {
           <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1) }}
             className="bg-input border border-border rounded px-3 py-1.5 text-sm" />
         </div>
+        <button
+          onClick={() => shiftMonth(1)}
+          className="flex items-center justify-center w-8 h-8 rounded-lg bg-secondary hover:bg-accent transition-colors self-end mb-0.5"
+          title="Next month"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+        <button
+          onClick={clearAllFilters}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary hover:bg-accent transition-colors text-sm font-medium"
+          title="Clear all filters"
+        >
+          <X className="w-4 h-4" />
+          Clear
+        </button>
         <div>
           <label className="text-xs text-muted-foreground block mb-1">Category</label>
           <select value={categoryId} onChange={e => { setCategoryId(e.target.value); setPage(1) }}
