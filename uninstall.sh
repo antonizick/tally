@@ -100,7 +100,7 @@ main() {
         fi
 
         # Kill any remaining uvicorn processes
-        pkill -f "uvicorn.*tally" 2>/dev/null || true
+        pkill -f uvicorn 2>/dev/null || true
 
         log_success "Services stopped (non-systemd mode)"
     fi
