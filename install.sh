@@ -269,7 +269,7 @@ check_systemd() {
 }
 
 # ============================================================================
-# STEP 8: Setup systemd service (or manual startup)
+# STEP 8: Setup systemd service (or auto-start for non-systemd)
 # ============================================================================
 setup_systemd() {
     if check_systemd; then
@@ -296,10 +296,45 @@ setup_systemd() {
         SYSTEMD_AVAILABLE=true
     else
         log_warn "systemd not detected in this environment"
-        log_info "Tally will run in manual mode. See startup instructions below."
+        log_info "Starting Tally services manually..."
         SYSTEMD_AVAILABLE=false
 
-        # Create a helper script for manual startup
+        # Create log directory
+        mkdir -p "$LOG_DIR"
+        chown "$TALLY_USER:$TALLY_USER" "$LOG_DIR"
+
+        # Start backend in background
+        log_info "Starting backend..."
+        nohup sudo -u "$TALLY_USER" "$INSTALL_DIR/backend/.venv/bin/uvicorn" \
+            app.main:app \
+            --host 0.0.0.0 \
+            --port 8000 \
+            >"$LOG_DIR/backend.log" 2>&1 &
+        BACKEND_PID=$!
+        echo $BACKEND_PID > "$LOG_DIR/backend.pid"
+
+        # Wait for backend to be ready
+        log_info "Waiting for backend to start..."
+        local max_attempts=15
+        local attempts=0
+        while ! curl -sf http://127.0.0.1:8000/health >/dev/null 2>&1; do
+            attempts=$((attempts + 1))
+            if [[ $attempts -ge $max_attempts ]]; then
+                log_error "Backend failed to start. Check logs: tail -f $LOG_DIR/backend.log"
+                exit 1
+            fi
+            sleep 1
+        done
+        log_success "Backend started (PID: $BACKEND_PID)"
+
+        # Start nginx in background
+        log_info "Starting nginx..."
+        nohup nginx -g "daemon off;" >"$LOG_DIR/nginx.log" 2>&1 &
+        NGINX_PID=$!
+        echo $NGINX_PID > "$LOG_DIR/nginx.pid"
+        log_success "Nginx started (PID: $NGINX_PID)"
+
+        # Create helper script for future restarts
         cat > "$INSTALL_DIR/start-tally.sh" <<'SCRIPT'
 #!/bin/bash
 # Manual startup script for Tally (when systemd is not available)
@@ -307,30 +342,35 @@ set -e
 
 INSTALL_DIR="/opt/tally"
 DATA_DIR="/var/lib/tally"
+LOG_DIR="/var/log/tally"
 TALLY_USER="tally"
 
+mkdir -p "$LOG_DIR"
+chown "$TALLY_USER:$TALLY_USER" "$LOG_DIR"
+
 echo "Starting Tally backend..."
-sudo -u $TALLY_USER $INSTALL_DIR/backend/.venv/bin/uvicorn \
+nohup sudo -u $TALLY_USER $INSTALL_DIR/backend/.venv/bin/uvicorn \
     app.main:app \
     --host 0.0.0.0 \
     --port 8000 \
-    --log-config "$INSTALL_DIR/backend/logging_config.yaml" &
-
+    >"$LOG_DIR/backend.log" 2>&1 &
 BACKEND_PID=$!
+echo $BACKEND_PID > "$LOG_DIR/backend.pid"
 echo "Backend PID: $BACKEND_PID"
 
-sleep 3
+sleep 2
 
 echo "Starting Tally frontend (nginx)..."
-nginx -g "daemon off;" &
+nohup nginx -g "daemon off;" >"$LOG_DIR/nginx.log" 2>&1 &
 NGINX_PID=$!
+echo $NGINX_PID > "$LOG_DIR/nginx.pid"
 echo "Nginx PID: $NGINX_PID"
 
-# Wait for processes
-wait
+echo ""
+echo "Both services are now running in the background."
 SCRIPT
         chmod +x "$INSTALL_DIR/start-tally.sh"
-        log_success "Manual startup script created at $INSTALL_DIR/start-tally.sh"
+        log_info "Helper script created: $INSTALL_DIR/start-tally.sh"
     fi
 }
 
@@ -410,22 +450,22 @@ print_summary() {
         echo "  Backend: sudo tail -f /var/log/tally/backend.log"
         echo "  System:  sudo journalctl -u tally-backend -f"
     else
-        echo -e "${YELLOW}⚠ Manual startup required (systemd not available)${NC}"
+        echo -e "${GREEN}✓ Services running in background (non-systemd mode)${NC}"
         echo ""
-        echo "To start Tally manually:"
+        echo "Service management:"
+        echo "  Check backend: curl http://localhost:8000/health"
+        echo "  Check nginx:   curl http://localhost"
+        echo ""
+        echo "To restart services:"
         echo "  sudo bash $INSTALL_DIR/start-tally.sh"
         echo ""
-        echo "Or start individual services:"
-        echo "  Backend:"
-        echo "    sudo -u tally $INSTALL_DIR/backend/.venv/bin/uvicorn \\"
-        echo "      app.main:app --host 0.0.0.0 --port 8000"
+        echo "To stop services manually:"
+        echo "  sudo killall -f uvicorn"
+        echo "  sudo killall nginx"
         echo ""
-        echo "  Frontend (nginx):"
-        echo "    sudo nginx -g \"daemon off;\""
-        echo ""
-        echo "Logs:"
-        echo "  Backend: see uvicorn output above"
-        echo "  Nginx:   sudo tail -f /var/log/nginx/access.log"
+        echo "Logs (tail -f to watch live):"
+        echo "  Backend: sudo tail -f /var/log/tally/backend.log"
+        echo "  Nginx:   sudo tail -f /var/log/tally/nginx.log"
     fi
     echo ""
     echo "Uninstall:"

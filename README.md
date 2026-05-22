@@ -32,7 +32,7 @@ curl -fsSL https://raw.githubusercontent.com/antonizick/tally/main/install.sh | 
 
 **Environments:**
 - **systemd-enabled systems** (standard Ubuntu/Debian servers): Auto-starts Tally, auto-restarts on crash, managed via `systemctl`
-- **Non-systemd environments** (containers, WSL, custom init systems): Installer detects this and creates a manual startup script instead. See `./start-tally.sh` or follow the printed instructions.
+- **Non-systemd environments** (Docker containers, WSL, LXC, custom init systems): Installer detects this and automatically starts services in the background. Services run immediately; use `./start-tally.sh` to restart them anytime.
 
 **After installation:** Access your Tally instance at `http://your-server-ip`
 
