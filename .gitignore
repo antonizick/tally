@@ -53,3 +53,7 @@ Thumbs.db
 sampledata/
 sampless/
 instance/
+
+# Backups (stored in ~/.tally/backups, never commit)
+tally_backup_*.tar.gz
+tally_backup_*.tar.gz.meta.json
