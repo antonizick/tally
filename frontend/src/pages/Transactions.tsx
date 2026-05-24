@@ -23,6 +23,7 @@ interface Transaction {
   is_transfer: boolean
   tags: Array<{ id: number; name: string; color: string | null }>
   notes: string | null
+  source_file: string | null
 }
 
 interface Category {
@@ -231,6 +232,18 @@ export default function Transactions() {
         ) : null
       ),
       size: 40,
+    },
+    {
+      id: 'source-file',
+      header: 'Source File',
+      accessorKey: 'source_file',
+      cell: ({ getValue }) => {
+        const val = getValue<string | null>()
+        return val
+          ? <span className="text-xs text-gray-600 truncate max-w-[160px] block" title={val}>{val}</span>
+          : <span className="text-gray-600">—</span>
+      },
+      size: 160,
     },
   ]
 

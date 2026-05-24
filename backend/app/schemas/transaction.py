@@ -30,6 +30,7 @@ class TransactionRead(BaseModel):
     tags: list[TagRead] = []
     notes: str | None = None
     created_at: datetime | str
+    source_file: str | None = None
 
     model_config = {"from_attributes": True}
 

@@ -19,6 +19,14 @@ async def _build_tx_read(tx: Transaction, db: AsyncSession) -> dict:
         tag = await db.get(Tag, tt.tag_id)
         if tag:
             tags.append({"id": tag.id, "name": tag.name, "type": tag.type, "color": tag.color})
+
+    source_file = None
+    try:
+        if hasattr(tx, 'import_batch') and tx.import_batch:
+            source_file = tx.import_batch.filename
+    except Exception:
+        source_file = None
+
     return {
         "id": tx.id,
         "account_id": tx.account_id,
@@ -37,6 +45,7 @@ async def _build_tx_read(tx: Transaction, db: AsyncSession) -> dict:
         "tags": tags,
         "notes": tx.notes,
         "created_at": str(tx.created_at),
+        "source_file": source_file,
     }
 
 
@@ -79,7 +88,7 @@ async def list_transactions(
 
     q = (
         select(Transaction)
-        .options(selectinload(Transaction.tags))
+        .options(selectinload(Transaction.tags), selectinload(Transaction.import_batch))
         .order_by(Transaction.date.desc(), Transaction.id.desc())
         .offset(offset)
         .limit(page_size)
