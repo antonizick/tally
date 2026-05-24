@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
@@ -43,6 +43,24 @@ function flatCategories(cats: Category[]): Array<{ id: number; label: string }> 
     }
   }
   return out
+}
+
+function NotesCell({ transactionId, initialValue, onSave }: { transactionId: number; initialValue: string | null; onSave: (id: number, value: string | null) => void }) {
+  const [value, setValue] = useState(initialValue || '')
+
+  return (
+    <input
+      type="text"
+      value={value}
+      onChange={e => setValue(e.target.value)}
+      onBlur={() => {
+        if (value !== (initialValue || '')) {
+          onSave(transactionId, value || null)
+        }
+      }}
+      className="bg-input border border-border rounded px-2 py-1 text-xs w-full max-w-[200px]"
+    />
+  )
 }
 
 export default function Transactions() {
@@ -180,13 +198,10 @@ export default function Transactions() {
       id: 'notes',
       header: 'Notes',
       cell: ({ row }) => (
-        <input
-          type="text"
-          value={row.original.notes || ''}
-          onChange={e => {
-            updateMutation.mutate({ id: row.original.id, notes: e.target.value || null })
-          }}
-          className="bg-input border border-border rounded px-2 py-1 text-xs w-full max-w-[200px]"
+        <NotesCell
+          transactionId={row.original.id}
+          initialValue={row.original.notes}
+          onSave={(id, value) => updateMutation.mutate({ id, notes: value })}
         />
       ),
       size: 200,
