@@ -102,34 +102,62 @@ async def dashboard_summary(
         Transaction.date <= str(period_end),
         Transaction.is_transfer == False,
     ]
+
+    # Get Income category ID and its children for accurate income calculation
+    income_parent_id = (await db.execute(
+        select(Category.id).where(Category.name == "Income")
+    )).scalar_one_or_none()
+    income_category_ids: set[int] = set()
+    if income_parent_id:
+        income_category_ids.add(income_parent_id)
+        income_child_rows = (await db.execute(
+            select(Category.id).where(Category.parent_id == income_parent_id)
+        )).scalars().all()
+        income_category_ids.update(income_child_rows)
+
     summary_result = await db.execute(
         select(
             func.sum(Transaction.amount).filter(Transaction.amount < 0).label("expenses"),
-            func.sum(Transaction.amount).filter(Transaction.amount > 0).label("income"),
+            func.sum(Transaction.amount).filter(Transaction.category_id.in_(income_category_ids) if income_category_ids else False).label("income"),
             func.count(Transaction.id).label("count"),
             func.count(Transaction.id).filter(Transaction.review_status == "pending").label("pending"),
         ).where(and_(*tx_filter))
     )
     summary = summary_result.one()
 
-    # Resolve Quiet category IDs (parent + all children) to exclude when show_quiet=False
-    quiet_ids: set[int] = set()
+    # Resolve excluded category IDs (Salary always, Quiet optionally)
+    excluded_ids: set[int] = set()
+
+    # Always exclude Salary category and its children
+    salary_parent_id = (await db.execute(
+        select(Category.id).where(Category.name == "Salary")
+    )).scalar_one_or_none()
+    if salary_parent_id:
+        excluded_ids.add(salary_parent_id)
+        child_rows = (await db.execute(
+            select(Category.id).where(Category.parent_id == salary_parent_id)
+        )).scalars().all()
+        excluded_ids.update(child_rows)
+
+    # Exclude Quiet category and its children when show_quiet=False
     if not show_quiet:
         quiet_parent_id = (await db.execute(
             select(Category.id).where(Category.name == "Quiet")
         )).scalar_one_or_none()
         if quiet_parent_id:
-            quiet_ids.add(quiet_parent_id)
+            excluded_ids.add(quiet_parent_id)
             child_rows = (await db.execute(
                 select(Category.id).where(Category.parent_id == quiet_parent_id)
             )).scalars().all()
-            quiet_ids.update(child_rows)
+            excluded_ids.update(child_rows)
 
     # Top spending categories (with id + color + parent for navigation and chart)
+    # Include all transactions regardless of amount sign; categorization determines expense/income
+    # Always exclude Salary; exclude Quiet when show_quiet=False
     ParentCat = aliased(Category)
-    top_cat_filters = [*tx_filter, Transaction.amount < 0]
-    if quiet_ids:
-        top_cat_filters.append(Category.id.notin_(quiet_ids))
+    top_cat_filters = [*tx_filter]
+    if excluded_ids:
+        top_cat_filters.append(Category.id.notin_(excluded_ids))
     top_cats_result = await db.execute(
         select(
             Category.id,
@@ -144,7 +172,7 @@ async def dashboard_summary(
         .outerjoin(ParentCat, ParentCat.id == Category.parent_id)
         .where(and_(*top_cat_filters))
         .group_by(Category.id, Category.name, Category.color, Category.parent_id, ParentCat.name)
-        .order_by(func.sum(Transaction.amount).asc())
+        .order_by(func.abs(func.sum(Transaction.amount)).desc())
     )
     top_categories = [
         {
@@ -195,4 +223,5 @@ async def dashboard_summary(
         "period_transaction_count": summary.count,
         "pending_review_count": pending_count,
         "top_categories": top_categories,
+        "income_category_ids": list(income_category_ids),
     }

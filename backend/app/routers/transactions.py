@@ -57,6 +57,7 @@ async def list_transactions(
     date_to: str | None = Query(None),
     review_status: str | None = Query(None),
     search: str | None = Query(None),
+    amount_sign: str | None = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, le=200),
     db: AsyncSession = Depends(get_db),
@@ -78,6 +79,10 @@ async def list_transactions(
         filters.append(Transaction.review_status == review_status)
     if search:
         filters.append(Transaction.description.ilike(f"%{search}%"))
+    if amount_sign == "positive":
+        filters.append(Transaction.amount > 0)
+    elif amount_sign == "negative":
+        filters.append(Transaction.amount < 0)
 
     offset = (page - 1) * page_size
 

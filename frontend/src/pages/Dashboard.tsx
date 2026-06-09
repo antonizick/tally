@@ -167,16 +167,17 @@ function DetailTrendChart({ data, assetNames, liabNames }: {
   )
 }
 
-function StatCard({ label, value, rawValue, prevValue, sub, color, items }: {
+function StatCard({ label, value, rawValue, prevValue, sub, color, items, onClick }: {
   label: string; value: string; rawValue?: number; prevValue?: number | null
-  sub?: string; color?: string; items?: BreakdownItem[]
+  sub?: string; color?: string; items?: BreakdownItem[]; onClick?: () => void
 }) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
   return (
     <div
-      className="bg-card border border-border rounded-xl p-5"
+      className={`bg-card border border-border rounded-xl p-5 ${onClick ? 'cursor-pointer hover:bg-accent/20 transition-colors' : ''}`}
       onMouseMove={e => setPos({ x: e.clientX, y: e.clientY })}
       onMouseLeave={() => setPos(null)}
+      onClick={onClick}
     >
       <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
       <p className={`text-2xl font-bold ${color || ''}`}>{value}</p>
@@ -489,6 +490,12 @@ export default function Dashboard() {
           value={formatCurrency(Math.abs(summary?.period_income || 0))}
           color="text-emerald-400"
           sub={`${formatDate(dateFrom)} – ${formatDate(dateTo)}`}
+          onClick={() => {
+            const incomeCatIds = (summary?.income_category_ids || []).join(',')
+            if (incomeCatIds) {
+              navigate(`/transactions?date_from=${dateFrom}&date_to=${dateTo}&category_id=${incomeCatIds}`)
+            }
+          }}
         />
       </div>
 

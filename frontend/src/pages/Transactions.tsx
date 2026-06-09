@@ -70,6 +70,7 @@ export default function Transactions() {
   const [dateFrom, setDateFrom] = useState(searchParams.get('date_from') || start)
   const [dateTo, setDateTo] = useState(searchParams.get('date_to') || end)
   const [categoryId, setCategoryId] = useState(searchParams.get('category_id') || '')
+  const [amountSign, setAmountSign] = useState(searchParams.get('amount_sign') || '')
   const [reviewStatus, setReviewStatus] = useState('')
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -79,6 +80,7 @@ export default function Transactions() {
     date_from: dateFrom,
     date_to: dateTo,
     category_ids: categoryId || undefined,
+    amount_sign: amountSign || undefined,
     review_status: reviewStatus || undefined,
     search: search || undefined,
     page,

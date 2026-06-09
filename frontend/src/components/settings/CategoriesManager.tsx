@@ -6,7 +6,6 @@ import {
   AlertTriangle, Tag, ChevronsDownUp, ChevronsUpDown,
 } from 'lucide-react'
 import { categoriesApi } from '@/lib/api'
-import { useDashboardDates } from '@/store/dashboardDates'
 import { cn } from '@/lib/utils'
 
 interface Category {
@@ -394,7 +393,6 @@ function ParentCategoryRow({
 export default function CategoriesManager() {
   const qc = useQueryClient()
   const navigate = useNavigate()
-  const { dateFrom, dateTo } = useDashboardDates()
   const [addingParent, setAddingParent] = useState(false)
   const [newParent, setNewParent] = useState({ name: '', color: '#3b82f6' })
   const [showNewParentPicker, setShowNewParentPicker] = useState(false)
@@ -410,12 +408,12 @@ export default function CategoriesManager() {
     })
 
   const handleNavigate = (id: number) => {
-    navigate(`/transactions?date_from=${dateFrom}&date_to=${dateTo}&category_id=${id}`)
+    navigate(`/transactions?category_id=${id}`)
   }
 
   const { data: categories = [], isLoading } = useQuery<Category[]>({
-    queryKey: ['categories', dateFrom, dateTo],
-    queryFn: () => categoriesApi.list({ date_from: dateFrom, date_to: dateTo }),
+    queryKey: ['categories'],
+    queryFn: () => categoriesApi.list(),
   })
 
   const createMutation = useMutation({
