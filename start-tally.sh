@@ -8,7 +8,7 @@ ROOT="/home/nick/dev/lucent/idea/Tally"
 # Backend
 cd "$ROOT/backend"
 source .venv/bin/activate
-uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+uvicorn app.main:app --host 127.0.0.1 --port 8010 &
 BACKEND_PID=$!
 
 # Frontend

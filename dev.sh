@@ -27,7 +27,7 @@ wait_for_port() {
 
 # Kill any lingering processes on these ports
 cleanup_ports() {
-  for port in 8000 5173; do
+  for port in 8010 5173; do
     if lsof -i :$port >/dev/null 2>&1; then
       echo "🧹 Cleaning up port $port..."
       lsof -i :$port | grep -v COMMAND | awk '{print $2}' | xargs kill -9 2>/dev/null || true
@@ -38,7 +38,7 @@ cleanup_ports() {
 
 # Clean up any stuck processes
 cleanup_ports
-wait_for_port 8000 || true
+wait_for_port 8010 || true
 wait_for_port 5173 || true
 
 # Backend
@@ -51,7 +51,7 @@ source .venv/bin/activate
 pip install -q -e . 2>/dev/null || pip install -e .
 
 echo "✅ Backend dependencies installed"
-uvicorn app.main:app --reload --port 8000 &
+uvicorn app.main:app --reload --port 8010 &
 BACKEND_PID=$!
 
 # Frontend
@@ -65,9 +65,9 @@ FRONTEND_PID=$!
 
 echo ""
 echo "🎉 Tally is running!"
-echo "   Backend:  http://localhost:8000"
+echo "   Backend:  http://localhost:8010"
 echo "   Frontend: http://localhost:5173"
-echo "   API Docs: http://localhost:8000/docs"
+echo "   API Docs: http://localhost:8010/docs"
 echo "   Data:     ~/.tally/ (SQLite)"
 echo ""
 echo "Press Ctrl+C to stop"
