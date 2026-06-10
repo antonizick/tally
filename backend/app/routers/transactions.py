@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from sqlalchemy.orm import selectinload
 from app.database import get_db
-from app.models import Transaction, TransactionTag, Tag, Category, CorrectionHistory
+from app.models import Transaction, TransactionTag, Tag, Category, CorrectionHistory, ImportBatch
 from app.schemas.transaction import TransactionRead, TransactionUpdate, TransactionFilter
 
 router = APIRouter(prefix="/api/transactions", tags=["transactions"])
@@ -49,6 +49,32 @@ async def _build_tx_read(tx: Transaction, db: AsyncSession) -> dict:
     }
 
 
+@router.get("/source-files")
+async def list_source_files(
+    date_from: str | None = Query(None),
+    date_to: str | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+):
+    """Distinct source filenames scoped to the given date range."""
+    tx_filters = [Transaction.import_batch_id == ImportBatch.id]
+    if date_from:
+        tx_filters.append(Transaction.date >= date_from)
+    if date_to:
+        tx_filters.append(Transaction.date <= date_to)
+    q = (
+        select(ImportBatch.filename)
+        .where(ImportBatch.id.in_(
+            select(Transaction.import_batch_id)
+            .where(*tx_filters)
+            .where(Transaction.import_batch_id.isnot(None))
+        ))
+        .distinct()
+        .order_by(ImportBatch.filename)
+    )
+    result = await db.execute(q)
+    return [row[0] for row in result.all()]
+
+
 @router.get("/")
 async def list_transactions(
     account_ids: str | None = Query(None),
@@ -58,6 +84,7 @@ async def list_transactions(
     review_status: str | None = Query(None),
     search: str | None = Query(None),
     amount_sign: str | None = Query(None),
+    source_file: str | None = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, le=200),
     db: AsyncSession = Depends(get_db),
@@ -83,6 +110,9 @@ async def list_transactions(
         filters.append(Transaction.amount > 0)
     elif amount_sign == "negative":
         filters.append(Transaction.amount < 0)
+    if source_file:
+        subq = select(ImportBatch.id).where(ImportBatch.filename == source_file)
+        filters.append(Transaction.import_batch_id.in_(subq))
 
     offset = (page - 1) * page_size
 

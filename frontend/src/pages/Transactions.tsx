@@ -73,6 +73,7 @@ export default function Transactions() {
   const [amountSign, setAmountSign] = useState(searchParams.get('amount_sign') || '')
   const [reviewStatus, setReviewStatus] = useState('')
   const [search, setSearch] = useState('')
+  const [sourceFile, setSourceFile] = useState('')
   const [page, setPage] = useState(1)
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -83,6 +84,7 @@ export default function Transactions() {
     amount_sign: amountSign || undefined,
     review_status: reviewStatus || undefined,
     search: search || undefined,
+    source_file: sourceFile || undefined,
     page,
     page_size: 50,
   }
@@ -95,6 +97,11 @@ export default function Transactions() {
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: () => categoriesApi.list(),
+  })
+
+  const { data: sourceFiles = [] } = useQuery<string[]>({
+    queryKey: ['transaction-source-files', dateFrom, dateTo],
+    queryFn: () => transactionsApi.sourceFiles({ date_from: dateFrom, date_to: dateTo }),
   })
 
   const flatCats = flatCategories(categories)
@@ -125,6 +132,7 @@ export default function Transactions() {
     const last = new Date(base.getFullYear(), base.getMonth() + 1, 0)
     setDateFrom(first.toISOString().slice(0, 10))
     setDateTo(last.toISOString().slice(0, 10))
+    setSourceFile('')
     setPage(1)
   }
 
@@ -135,6 +143,7 @@ export default function Transactions() {
     setCategoryId('')
     setReviewStatus('')
     setSearch('')
+    setSourceFile('')
     setPage(1)
   }
 
@@ -287,12 +296,12 @@ export default function Transactions() {
         </button>
         <div>
           <label className="text-xs text-muted-foreground block mb-1">From</label>
-          <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1) }}
+          <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setSourceFile(''); setPage(1) }}
             className="bg-input border border-border rounded px-3 py-1.5 text-sm" />
         </div>
         <div>
           <label className="text-xs text-muted-foreground block mb-1">To</label>
-          <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1) }}
+          <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setSourceFile(''); setPage(1) }}
             className="bg-input border border-border rounded px-3 py-1.5 text-sm" />
         </div>
         <button
@@ -330,6 +339,18 @@ export default function Transactions() {
             <option value="overridden">Overridden</option>
           </select>
         </div>
+        {sourceFiles.length > 0 && (
+          <div>
+            <label className="text-xs text-muted-foreground block mb-1">Source File</label>
+            <select value={sourceFile} onChange={e => { setSourceFile(e.target.value); setPage(1) }}
+              className="bg-input border border-border rounded px-3 py-1.5 text-sm max-w-[220px]">
+              <option value="">All Files</option>
+              {sourceFiles.map(f => (
+                <option key={f} value={f}>{f}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="flex-1 min-w-[200px]">
           <label className="text-xs text-muted-foreground block mb-1">Search</label>
           <input

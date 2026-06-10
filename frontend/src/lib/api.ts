@@ -22,6 +22,7 @@ export const transactionsApi = {
   update: (id: number, data: Record<string, unknown>) => api.patch(`/api/transactions/${id}`, data).then(r => r.data),
   bulkApprove: (ids: number[]) => api.post('/api/transactions/bulk-approve', ids).then(r => r.data),
   summary: (params: Record<string, unknown>) => api.get('/api/transactions/summary', { params }).then(r => r.data),
+  sourceFiles: (params?: { date_from?: string; date_to?: string }): Promise<string[]> => api.get('/api/transactions/source-files', { params }).then(r => r.data),
 }
 
 // ---- Categories ----
