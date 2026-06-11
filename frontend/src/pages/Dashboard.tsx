@@ -7,8 +7,8 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend,
   LineChart, Line,
 } from 'recharts'
-import { Landmark, TrendingUp, TrendingDown, ChevronLeft, ChevronRight } from 'lucide-react'
-import { dashboardApi, netWorthApi, stockHoldingsApi } from '@/lib/api'
+import { Landmark, TrendingUp, TrendingDown, ChevronLeft, ChevronRight, Tag } from 'lucide-react'
+import { dashboardApi, netWorthApi, stockHoldingsApi, tagsApi } from '@/lib/api'
 import { formatCurrency, formatDate, formatMonth, getFirstLastOfMonth } from '@/lib/utils'
 
 const FALLBACK_COLORS = ['#3b82f6','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#f97316','#22c55e','#ef4444']
@@ -281,11 +281,15 @@ function PortfolioTooltip({ active, payload, label, allData }: any) {
   )
 }
 
+type TagItem = { id: number; name: string; type: string; color: string | null }
+
 export default function Dashboard() {
   const { dateFrom, dateTo, setDateFrom, setDateTo } = useDashboardDates()
   const [showQuiet, setShowQuiet] = useState(false)
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 
   const handleDateFromChange = (value: string) => {
+    setSelectedTagIds([])
     setDateFrom(value)
     if (value) {
       const d = new Date(value + 'T00:00:00')
@@ -297,6 +301,7 @@ export default function Dashboard() {
   }
 
   const shiftMonth = (delta: number) => {
+    setSelectedTagIds([])
     const base = dateFrom ? new Date(dateFrom + 'T00:00:00') : new Date()
     base.setDate(1)
     base.setMonth(base.getMonth() + delta)
@@ -306,10 +311,23 @@ export default function Dashboard() {
     setDateTo(last.toISOString().slice(0, 10))
   }
 
+  const { data: allTags = [] } = useQuery<TagItem[]>({
+    queryKey: ['tags', 'relevant', dateFrom, dateTo],
+    queryFn: () => tagsApi.relevant({ date_from: dateFrom, date_to: dateTo }),
+  })
+
+  const toggleTag = (id: number) =>
+    setSelectedTagIds(ids => ids.includes(id) ? ids.filter(i => i !== id) : [...ids, id])
+
   // Dashboard summary is date-range constrained
   const { data: summary, isLoading } = useQuery({
-    queryKey: ['dashboard', 'summary', dateFrom, dateTo, showQuiet],
-    queryFn: () => dashboardApi.summary({ date_from: dateFrom, date_to: dateTo, show_quiet: showQuiet }),
+    queryKey: ['dashboard', 'summary', dateFrom, dateTo, showQuiet, selectedTagIds],
+    queryFn: () => dashboardApi.summary({
+      date_from: dateFrom,
+      date_to: dateTo,
+      show_quiet: showQuiet,
+      ...(selectedTagIds.length > 0 && { tag_ids: selectedTagIds.join(',') }),
+    }),
   })
 
   // Trend is always all-time — not constrained by date pickers
@@ -443,6 +461,37 @@ export default function Dashboard() {
           />
           <span className="text-sm text-muted-foreground">Show Quiet</span>
         </label>
+        {allTags.length > 0 && (
+          <div className="w-full border-t border-border pt-3 flex flex-wrap gap-2 items-center">
+            <Tag className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+            <span className="text-xs text-muted-foreground mr-1">Filter by tag:</span>
+            {allTags.map(tag => {
+              const active = selectedTagIds.includes(tag.id)
+              const color = tag.color || '#3b82f6'
+              return (
+                <button
+                  key={tag.id}
+                  onClick={() => toggleTag(tag.id)}
+                  className="text-xs px-2.5 py-0.5 rounded-full border transition-colors"
+                  style={active
+                    ? { borderColor: color, backgroundColor: color + '33', color }
+                    : { borderColor: 'hsl(217 33% 22%)', color: 'hsl(215 16% 47%)' }
+                  }
+                >
+                  {tag.name}
+                </button>
+              )
+            })}
+            {selectedTagIds.length > 0 && (
+              <button
+                onClick={() => setSelectedTagIds([])}
+                className="text-xs text-muted-foreground hover:text-foreground underline ml-1"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
 
@@ -539,7 +588,14 @@ export default function Dashboard() {
 
         {/* Top Spending pie — constrained by date pickers */}
         <div className="bg-card border border-border rounded-xl p-5">
-          <h3 className="font-semibold mb-4">Top Spending</h3>
+          <h3 className="font-semibold mb-4 flex flex-wrap items-center gap-2">
+            Top Spending
+            {selectedTagIds.length > 0 && (
+              <span className="text-xs font-normal text-muted-foreground">
+                · {allTags.filter(t => selectedTagIds.includes(t.id)).map(t => t.name).join(', ')}
+              </span>
+            )}
+          </h3>
           {pieData.length === 0 ? (
             <div className="h-48 flex items-center justify-center text-muted-foreground text-sm">
               No transactions yet
@@ -726,8 +782,14 @@ export default function Dashboard() {
       {/* Spending breakdown table — constrained by date pickers */}
       {topCats.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-5">
-          <h3 className="font-semibold mb-4">
+          <h3 className="font-semibold mb-4 flex flex-wrap items-center gap-2">
             Spending Breakdown — {formatDate(dateFrom)} – {formatDate(dateTo)}
+            {selectedTagIds.length > 0 && (
+              <span className="text-xs font-normal text-muted-foreground">
+                · tagged:{' '}
+                {allTags.filter(t => selectedTagIds.includes(t.id)).map(t => t.name).join(', ')}
+              </span>
+            )}
           </h3>
           <div className="space-y-2">
             {topCats.map((cat, i) => {

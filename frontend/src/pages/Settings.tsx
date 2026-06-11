@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Trash2, CheckCircle, Pencil } from 'lucide-react'
+import { Plus, Trash2, CheckCircle, Pencil, Tag } from 'lucide-react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { accountsApi, categoriesApi, tagsApi, netWorthApi, stockHoldingsApi } from '@/lib/api'
 import CategoriesManager from '@/components/settings/CategoriesManager'
@@ -22,6 +22,16 @@ interface StockHolding {
   quantity: number
 }
 
+interface TagItem {
+  id: number
+  name: string
+  type: string
+  color: string | null
+}
+
+const TAG_TYPES = ['custom', 'person', 'project']
+const TAG_PRESET_COLORS = ['#3b82f6','#ec4899','#22c55e','#f59e0b','#8b5cf6','#06b6d4','#f97316','#ef4444']
+
 const ACCOUNT_TYPES = [
   'checking', 'savings', 'credit_card', 'retirement_401k', 'retirement_ira',
   'brokerage', 'home', 'vehicle', 'other_asset', 'loan', 'mortgage', 'other_liability',
@@ -38,8 +48,12 @@ export default function Settings() {
   const [showNewHolding, setShowNewHolding] = useState(false)
   const [editingHolding, setEditingHolding] = useState<{ id: number; quantity: string } | null>(null)
 
+  const [newTag, setNewTag] = useState({ name: '', type: 'custom', color: '#3b82f6' })
+  const [showNewTag, setShowNewTag] = useState(false)
+
   const { data: accounts = [] } = useQuery<Account[]>({ queryKey: ['accounts'], queryFn: accountsApi.list })
   const { data: holdings = [] } = useQuery<StockHolding[]>({ queryKey: ['stock-holdings'], queryFn: stockHoldingsApi.list })
+  const { data: tags = [] } = useQuery<TagItem[]>({ queryKey: ['tags'], queryFn: tagsApi.list })
 
   const createAccount = useMutation({
     mutationFn: (data: Record<string, unknown>) => accountsApi.create(data),
@@ -93,6 +107,20 @@ export default function Settings() {
   const seedViews = useMutation({
     mutationFn: () => netWorthApi.seedViews(),
     onSuccess: () => setSeeded(s => [...s, 'views']),
+  })
+
+  const createTag = useMutation({
+    mutationFn: (data: Record<string, unknown>) => tagsApi.create(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['tags'] })
+      setShowNewTag(false)
+      setNewTag({ name: '', type: 'custom', color: '#3b82f6' })
+    },
+  })
+
+  const deleteTag = useMutation({
+    mutationFn: (id: number) => tagsApi.delete(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tags'] }),
   })
 
   return (
@@ -360,6 +388,106 @@ export default function Settings() {
                     </button>
                   </div>
                 )}
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* Tags */}
+      <section className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <div>
+            <h2 className="font-semibold">Tags</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Label transactions for cross-category tracking (trips, projects, people).</p>
+          </div>
+          <button
+            onClick={() => setShowNewTag(true)}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-sm hover:opacity-90"
+          >
+            <Plus className="w-4 h-4" /> Add Tag
+          </button>
+        </div>
+
+        {showNewTag && (
+          <div className="px-6 py-4 border-b border-border bg-accent/10 space-y-3">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Name</label>
+                <input
+                  value={newTag.name}
+                  onChange={e => setNewTag(t => ({ ...t, name: e.target.value }))}
+                  placeholder="e.g. RoadTrip_Jun"
+                  className="w-full bg-input border border-border rounded px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Type</label>
+                <select
+                  value={newTag.type}
+                  onChange={e => setNewTag(t => ({ ...t, type: e.target.value }))}
+                  className="w-full bg-input border border-border rounded px-3 py-2 text-sm"
+                >
+                  {TAG_TYPES.map(tp => <option key={tp} value={tp}>{tp}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Color</label>
+                <div className="flex gap-1.5 items-center flex-wrap">
+                  {TAG_PRESET_COLORS.map(c => (
+                    <button
+                      key={c}
+                      onClick={() => setNewTag(t => ({ ...t, color: c }))}
+                      className="w-5 h-5 rounded-full border-2 transition-all"
+                      style={{
+                        backgroundColor: c,
+                        borderColor: newTag.color === c ? 'white' : 'transparent',
+                      }}
+                    />
+                  ))}
+                  <input
+                    type="color"
+                    value={newTag.color}
+                    onChange={e => setNewTag(t => ({ ...t, color: e.target.value }))}
+                    className="w-6 h-6 rounded cursor-pointer border border-border bg-transparent"
+                    title="Custom color"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => createTag.mutate({ name: newTag.name, type: newTag.type, color: newTag.color })}
+                disabled={!newTag.name.trim() || createTag.isPending}
+                className="flex-1 bg-primary text-primary-foreground rounded py-2 text-sm hover:opacity-90 disabled:opacity-50"
+              >
+                Save Tag
+              </button>
+              <button onClick={() => setShowNewTag(false)} className="px-4 bg-secondary rounded text-sm hover:bg-accent">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="divide-y divide-border">
+          {(tags as TagItem[]).length === 0 ? (
+            <div className="px-6 py-8 text-center text-sm text-muted-foreground">
+              No tags yet. Add one or use Seed Tags in Quick Setup.
+            </div>
+          ) : (
+            (tags as TagItem[]).map(t => (
+              <div key={t.id} className="flex items-center gap-3 px-6 py-3">
+                <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: t.color || '#3b82f6' }} />
+                <span className="text-sm font-medium flex-1">{t.name}</span>
+                <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-secondary">{t.type}</span>
+                <button
+                  onClick={() => deleteTag.mutate(t.id)}
+                  className="text-muted-foreground hover:text-destructive transition-colors"
+                  title="Delete tag"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))
           )}

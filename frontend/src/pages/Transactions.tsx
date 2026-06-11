@@ -5,8 +5,8 @@ import {
   useReactTable, getCoreRowModel, getSortedRowModel,
   flexRender, type ColumnDef, type SortingState,
 } from '@tanstack/react-table'
-import { CheckCircle, ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight, Filter, X } from 'lucide-react'
-import { transactionsApi, categoriesApi } from '@/lib/api'
+import { CheckCircle, ChevronDown, ChevronUp, ChevronsUpDown, ChevronLeft, ChevronRight, Filter, X, Plus } from 'lucide-react'
+import { transactionsApi, categoriesApi, tagsApi } from '@/lib/api'
 import { formatCurrency, formatDate, cn, amountColor, confidenceColor, getFirstLastOfMonth } from '@/lib/utils'
 
 interface Transaction {
@@ -43,6 +43,138 @@ function flatCategories(cats: Category[]): Array<{ id: number; label: string }> 
     }
   }
   return out
+}
+
+type TagOption = { id: number; name: string; color: string | null }
+
+function TagsCell({
+  transaction,
+  allTags,
+  onUpdate,
+  onCreateTag,
+}: {
+  transaction: Transaction
+  allTags: TagOption[]
+  onUpdate: (id: number, tagIds: number[]) => void
+  onCreateTag: (name: string) => Promise<TagOption>
+}) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [creating, setCreating] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!open) { setSearch(''); return }
+    const t = setTimeout(() => inputRef.current?.focus(), 30)
+    const handler = (e: MouseEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => { clearTimeout(t); document.removeEventListener('mousedown', handler) }
+  }, [open])
+
+  const currentIds = transaction.tags.map(t => t.id)
+  const trimmed = search.trim()
+  const available = allTags.filter(
+    t => !currentIds.includes(t.id) && t.name.toLowerCase().includes(trimmed.toLowerCase())
+  )
+  const exactExists = allTags.some(t => t.name.toLowerCase() === trimmed.toLowerCase())
+  const canCreate = trimmed.length > 0 && !exactExists
+
+  const removeTag = (tagId: number) => onUpdate(transaction.id, currentIds.filter(id => id !== tagId))
+  const addTag = (tagId: number) => { onUpdate(transaction.id, [...currentIds, tagId]); setOpen(false) }
+
+  const handleCreate = async () => {
+    if (!trimmed || creating) return
+    setCreating(true)
+    try {
+      const newTag = await onCreateTag(trimmed)
+      onUpdate(transaction.id, [...currentIds, newTag.id])
+      setOpen(false)
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  return (
+    <div ref={containerRef} className="flex flex-wrap gap-1 items-center relative min-w-[120px]">
+      {transaction.tags.map(t => {
+        const color = t.color || '#3b82f6'
+        return (
+          <span
+            key={t.id}
+            className="inline-flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded"
+            style={{ backgroundColor: color + '22', color, border: `1px solid ${color}55` }}
+          >
+            {t.name}
+            <button
+              onClick={() => removeTag(t.id)}
+              className="ml-0.5 hover:opacity-60 transition-opacity"
+              title={`Remove ${t.name}`}
+            >
+              <X className="w-2.5 h-2.5" />
+            </button>
+          </span>
+        )
+      })}
+      <div className="relative">
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="w-5 h-5 rounded-full border border-dashed border-muted-foreground/40 hover:border-primary text-muted-foreground hover:text-primary flex items-center justify-center transition-colors"
+          title="Add or create tag"
+        >
+          <Plus className="w-3 h-3" />
+        </button>
+        {open && (
+          <div className="absolute z-50 top-6 left-0 bg-card border border-border rounded-lg shadow-xl w-52 pb-1">
+            <div className="p-2">
+              <input
+                ref={inputRef}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && canCreate) handleCreate()
+                  if (e.key === 'Escape') setOpen(false)
+                }}
+                placeholder="Search or type new…"
+                className="w-full bg-input border border-border rounded px-2 py-1 text-xs"
+              />
+            </div>
+            {available.length > 0 && (
+              <div className="border-t border-border/50">
+                {available.map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => addTag(t.id)}
+                    className="w-full text-left px-3 py-1.5 text-xs hover:bg-accent flex items-center gap-2 transition-colors"
+                  >
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: t.color || '#3b82f6' }} />
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            )}
+            {canCreate && (
+              <div className={available.length > 0 ? 'border-t border-border/50 pt-0.5' : ''}>
+                <button
+                  onClick={handleCreate}
+                  disabled={creating}
+                  className="w-full text-left px-3 py-1.5 text-xs hover:bg-accent flex items-center gap-2 transition-colors text-primary disabled:opacity-50"
+                >
+                  <Plus className="w-3 h-3 shrink-0" />
+                  {creating ? 'Creating…' : `Create "${trimmed}"`}
+                </button>
+              </div>
+            )}
+            {available.length === 0 && !canCreate && (
+              <p className="px-3 py-2 text-xs text-muted-foreground">Type to search or create</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 function NotesCell({ transactionId, initialValue, onSave }: { transactionId: number; initialValue: string | null; onSave: (id: number, value: string | null) => void }) {
@@ -104,12 +236,24 @@ export default function Transactions() {
     queryFn: () => transactionsApi.sourceFiles({ date_from: dateFrom, date_to: dateTo }),
   })
 
+  const { data: allTags = [] } = useQuery<TagOption[]>({
+    queryKey: ['tags', 'relevant', dateFrom, dateTo],
+    queryFn: () => tagsApi.relevant({ date_from: dateFrom, date_to: dateTo }),
+  })
+
   const flatCats = flatCategories(categories)
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, ...body }: { id: number; category_id?: number; review_status?: string; notes?: string | null }) =>
+    mutationFn: ({ id, ...body }: { id: number; category_id?: number; review_status?: string; notes?: string | null; tag_ids?: number[] }) =>
       transactionsApi.update(id, body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['transactions'] }),
+  })
+
+  const createTagMutation = useMutation({
+    mutationFn: (name: string) => tagsApi.create({ name, type: 'custom', color: '#3b82f6' }) as Promise<TagOption>,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['tags'] })
+    },
   })
 
   const bulkApproveMutation = useMutation({
@@ -162,18 +306,7 @@ export default function Transactions() {
       accessorKey: 'description',
       header: 'Description',
       cell: ({ row }) => (
-        <div>
-          <p className="text-sm font-medium truncate max-w-xs">{row.original.description}</p>
-          {row.original.tags.length > 0 && (
-            <div className="flex gap-1 mt-0.5">
-              {row.original.tags.map(t => (
-                <span key={t.id} className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">
-                  {t.name}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+        <p className="text-sm font-medium truncate max-w-xs">{row.original.description}</p>
       ),
     },
     {
@@ -216,6 +349,19 @@ export default function Transactions() {
         />
       ),
       size: 200,
+    },
+    {
+      id: 'tags',
+      header: 'Tags',
+      cell: ({ row }) => (
+        <TagsCell
+          transaction={row.original}
+          allTags={allTags}
+          onUpdate={(id, tagIds) => updateMutation.mutate({ id, tag_ids: tagIds })}
+          onCreateTag={name => createTagMutation.mutateAsync(name)}
+        />
+      ),
+      size: 180,
     },
     {
       id: 'status',

@@ -6,7 +6,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy.orm import selectinload
 from datetime import date, timedelta
 from app.database import get_db
-from app.models import Transaction, MonthlySnapshot, NetWorthView, Category
+from app.models import Transaction, MonthlySnapshot, NetWorthView, Category, TransactionTag
 from app.routers.net_worth import compute_view
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -47,6 +47,7 @@ async def dashboard_summary(
     date_to: str | None = Query(None),
     months: int = Query(1, description="Fallback: how many months back from today"),
     show_quiet: bool = Query(False),
+    tag_ids: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
 ):
     today = date.today()
@@ -102,6 +103,13 @@ async def dashboard_summary(
         Transaction.date <= str(period_end),
         Transaction.is_transfer == False,
     ]
+    if tag_ids:
+        ids = [int(i) for i in tag_ids.split(",") if i.strip().lstrip("-").isdigit()]
+        if ids:
+            tagged_subq = select(TransactionTag.transaction_id).where(
+                TransactionTag.tag_id.in_(ids)
+            )
+            tx_filter.append(Transaction.id.in_(tagged_subq))
 
     # Get Income category ID and its children for accurate income calculation
     income_parent_id = (await db.execute(

@@ -38,8 +38,11 @@ export const categoriesApi = {
 // ---- Tags ----
 export const tagsApi = {
   list: () => api.get('/api/tags/').then(r => r.data),
+  relevant: (params?: { date_from?: string; date_to?: string }) =>
+    api.get('/api/tags/relevant', { params }).then(r => r.data),
   create: (data: Record<string, unknown>) => api.post('/api/tags/', data).then(r => r.data),
   seed: () => api.post('/api/tags/seed').then(r => r.data),
+  delete: (id: number) => api.delete(`/api/tags/${id}`).then(r => r.data),
 }
 
 // ---- Snapshots ----
@@ -65,7 +68,7 @@ export const netWorthApi = {
 
 // ---- Dashboard ----
 export const dashboardApi = {
-  summary: (params: { date_from?: string; date_to?: string; months?: number; show_quiet?: boolean } = {}) =>
+  summary: (params: { date_from?: string; date_to?: string; months?: number; show_quiet?: boolean; tag_ids?: string } = {}) =>
     api.get('/api/dashboard/summary', { params }).then(r => r.data),
 }
 
