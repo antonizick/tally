@@ -67,6 +67,9 @@ async def list_tags(db: AsyncSession = Depends(get_db)):
 
 @router.post("/", response_model=TagRead)
 async def create_tag(body: TagCreate, db: AsyncSession = Depends(get_db)):
+    existing = (await db.execute(select(Tag).where(Tag.name == body.name))).scalar_one_or_none()
+    if existing:
+        return existing
     tag = Tag(**body.model_dump())
     db.add(tag)
     await db.commit()
