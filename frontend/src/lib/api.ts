@@ -98,10 +98,10 @@ export const stockHoldingsApi = {
 // ---- Upload ----
 export const uploadApi = {
   csv: (formData: FormData) => api.post('/api/upload/csv', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { 'Content-Type': undefined },
   }).then(r => r.data),
   confirmMapping: (formData: FormData) => api.post('/api/upload/csv/confirm-mapping', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { 'Content-Type': undefined },
   }).then(r => r.data),
 }
 

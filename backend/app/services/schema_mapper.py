@@ -142,11 +142,51 @@ async def detect_schema(
     return mapping, conf
 
 
+def _looks_numeric(samples: list[str]) -> bool:
+    """Return True if most non-empty sample values parse as floats."""
+    hits = 0
+    checks = 0
+    for v in samples:
+        v = v.strip().replace("$", "").replace(",", "").replace("(", "-").replace(")", "")
+        if not v:
+            continue
+        checks += 1
+        try:
+            float(v)
+            hits += 1
+        except ValueError:
+            pass
+    return checks == 0 or (hits / checks) >= 0.5
+
+
+def validate_amount_mapping(mapping: dict, headers: list[str], sample_rows: list[list[str]]) -> bool:
+    """Return False if the mapped amount column contains non-numeric data."""
+    amount_type = mapping.get("amount_type", "single")
+    col_names = []
+    if amount_type == "split":
+        col_names = [c for c in [mapping.get("debit"), mapping.get("credit")] if c]
+    elif amount_type == "single":
+        col_names = [mapping.get("amount")] if mapping.get("amount") else []
+
+    for col in col_names:
+        try:
+            idx = next(i for i, h in enumerate(headers) if h.strip() == col)
+        except StopIteration:
+            continue
+        samples = [row[idx] for row in sample_rows if idx < len(row)]
+        if not _looks_numeric(samples):
+            return False
+    return True
+
+
 def parse_amount(row: dict, mapping: dict) -> float:
     """Parse the dollar amount from a row, normalizing to signed float."""
     def clean(v: str) -> float:
         v = v.strip().replace("$", "").replace(",", "").replace("(", "-").replace(")", "")
-        return float(v) if v else 0.0
+        try:
+            return float(v) if v else 0.0
+        except ValueError:
+            return 0.0
 
     amount_type = mapping.get("amount_type", "single")
 

@@ -11,7 +11,7 @@ from app.models import (
     Account, SchemaMapping, Transaction, ImportBatch, Category, CorrectionHistory
 )
 from app.services.schema_mapper import (
-    fingerprint_headers, detect_schema, parse_amount, parse_date
+    fingerprint_headers, detect_schema, parse_amount, parse_date, validate_amount_mapping
 )
 from app.ai.categorize import categorize_batch
 
@@ -134,6 +134,9 @@ async def ingest_csv(
     else:
         mapping, confidence = await detect_schema(headers, sample_rows)
         needs_confirmation = confidence < 0.95
+        # Even with high confidence, force confirmation if amount column looks non-numeric
+        if not needs_confirmation and not validate_amount_mapping(mapping, headers, sample_rows):
+            needs_confirmation = True
         if needs_confirmation:
             return {
                 "batch_id": None,
