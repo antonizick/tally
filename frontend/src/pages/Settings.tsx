@@ -4,6 +4,7 @@ import { Plus, Trash2, CheckCircle, Pencil, Tag } from 'lucide-react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { accountsApi, categoriesApi, tagsApi, netWorthApi, stockHoldingsApi } from '@/lib/api'
 import CategoriesManager from '@/components/settings/CategoriesManager'
+import CategorizationExemptions from '@/components/settings/CategorizationExemptions'
 import AdminTab from '@/components/settings/AdminTab'
 import ChecklistManager from '@/components/checklist/ChecklistManager'
 
@@ -503,6 +504,9 @@ export default function Settings() {
         </p>
         <CategoriesManager />
       </section>
+
+      {/* Categorization Exemptions */}
+      <CategorizationExemptions />
 
       {/* Info */}
       <section className="bg-card border border-border rounded-xl p-6">

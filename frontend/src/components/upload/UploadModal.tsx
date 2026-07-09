@@ -12,13 +12,15 @@ interface Props {
 
 interface IngestResult {
   batch_id: number | null
-  status: string
+  status: 'needs_mapping' | 'preview' | 'complete'
   needs_mapping_confirmation: boolean
   proposed_mapping: Record<string, string> | null
   fingerprint: string
   headers?: string[]
   sample_rows?: string[][]
   total: number
+  parsed?: number
+  after_cutoff?: number
   imported: number
   duplicates: number
 }
@@ -29,42 +31,58 @@ export default function UploadModal({ open, onClose }: Props) {
   const qc = useQueryClient()
   const [accountId, setAccountId] = useState<number | ''>('')
   const [file, setFile] = useState<File | null>(null)
+  const [dateFrom, setDateFrom] = useState('')
   const [result, setResult] = useState<IngestResult | null>(null)
   const [mapping, setMapping] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
 
   const { data: accounts = [] } = useQuery({ queryKey: ['accounts'], queryFn: accountsApi.list })
 
-  const uploadMutation = useMutation({
-    mutationFn: async () => {
-      if (!file || !accountId) throw new Error('Select account and file')
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('account_id', String(accountId))
-      return uploadApi.csv(fd)
-    },
-    onSuccess: (data: IngestResult) => {
-      setResult(data)
-      if (data.needs_mapping_confirmation && data.proposed_mapping) {
-        setMapping(data.proposed_mapping as Record<string, string>)
-      }
-      if (data.status === 'complete') {
-        qc.invalidateQueries({ queryKey: ['transactions'] })
-        qc.invalidateQueries({ queryKey: ['dashboard'] })
-      }
-    },
+  const buildUploadForm = (preview: boolean) => {
+    if (!file || !accountId) throw new Error('Select account and file')
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('account_id', String(accountId))
+    if (dateFrom) fd.append('date_from', dateFrom)
+    fd.append('preview', String(preview))
+    return fd
+  }
+
+  const buildConfirmForm = (preview: boolean) => {
+    if (!file || !accountId) throw new Error('Missing data')
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('account_id', String(accountId))
+    fd.append('mapping', JSON.stringify(mapping))
+    if (dateFrom) fd.append('date_from', dateFrom)
+    fd.append('preview', String(preview))
+    return fd
+  }
+
+  const onIngestResult = (data: IngestResult) => {
+    setResult(data)
+    if (data.proposed_mapping) setMapping(data.proposed_mapping)
+  }
+
+  // Step 1: analyze the file and either surface a mapping to confirm, or go
+  // straight to a preview of what this import would do.
+  const previewMutation = useMutation({
+    mutationFn: () => uploadApi.csv(buildUploadForm(true)),
+    onSuccess: onIngestResult,
     onError: (e: Error) => setError(e.message),
   })
 
-  const confirmMutation = useMutation({
-    mutationFn: async () => {
-      if (!file || !accountId) throw new Error('Missing data')
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('account_id', String(accountId))
-      fd.append('mapping', JSON.stringify(mapping))
-      return uploadApi.confirmMapping(fd)
-    },
+  // Step 2 (only if mapping needed confirming): re-run the preview with the
+  // user-confirmed mapping.
+  const confirmPreviewMutation = useMutation({
+    mutationFn: () => uploadApi.confirmMapping(buildConfirmForm(true)),
+    onSuccess: onIngestResult,
+    onError: (e: Error) => setError(e.message),
+  })
+
+  // Step 3: commit the import using the exact mapping the preview was based on.
+  const commitMutation = useMutation({
+    mutationFn: () => uploadApi.confirmMapping(buildConfirmForm(false)),
     onSuccess: (data: IngestResult) => {
       setResult(data)
       qc.invalidateQueries({ queryKey: ['transactions'] })
@@ -89,10 +107,16 @@ export default function UploadModal({ open, onClose }: Props) {
 
   const reset = () => {
     setFile(null)
+    setDateFrom('')
     setResult(null)
     setError(null)
     setMapping({})
     onClose()
+  }
+
+  const backToOptions = () => {
+    setResult(null)
+    setError(null)
   }
 
   if (!open) return null
@@ -122,6 +146,21 @@ export default function UploadModal({ open, onClose }: Props) {
               ))}
             </select>
           </div>
+
+          {/* Date cutoff */}
+          {!result && (
+            <div>
+              <label className="text-sm font-medium mb-1.5 block">
+                Only import transactions on or after <span className="text-muted-foreground font-normal">(optional)</span>
+              </label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={e => setDateFrom(e.target.value)}
+                className="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+          )}
 
           {/* Dropzone */}
           {!result && (
@@ -179,12 +218,53 @@ export default function UploadModal({ open, onClose }: Props) {
               </div>
               <div className="flex gap-3 pt-2">
                 <button
-                  onClick={() => confirmMutation.mutate()}
-                  disabled={confirmMutation.isPending}
+                  onClick={() => confirmPreviewMutation.mutate()}
+                  disabled={confirmPreviewMutation.isPending}
                   className="flex-1 bg-primary text-primary-foreground rounded-lg py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {confirmMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                  Confirm & Import
+                  {confirmPreviewMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  Confirm & Preview
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Preview / confirm counts */}
+          {result?.status === 'preview' && (
+            <div className="bg-accent/10 border border-border rounded-xl p-4 space-y-4">
+              <p className="text-sm font-medium">Ready to import — review before continuing</p>
+              <div className="grid grid-cols-2 gap-3 text-center text-sm">
+                <div>
+                  <div className="text-lg font-bold">{result.total}</div>
+                  <div className="text-xs text-muted-foreground">Records total</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold">{result.after_cutoff ?? result.total}</div>
+                  <div className="text-xs text-muted-foreground">Met date cutoff</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-muted-foreground">{result.duplicates}</div>
+                  <div className="text-xs text-muted-foreground">Duplicates</div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-emerald-400">{result.imported}</div>
+                  <div className="text-xs text-muted-foreground">Will import</div>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={backToOptions}
+                  className="px-4 bg-secondary text-secondary-foreground rounded-lg py-2 text-sm font-medium hover:bg-accent transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => commitMutation.mutate()}
+                  disabled={commitMutation.isPending || result.imported === 0}
+                  className="flex-1 bg-primary text-primary-foreground rounded-lg py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {commitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  Import {result.imported} Transaction{result.imported === 1 ? '' : 's'}
                 </button>
               </div>
             </div>
@@ -214,22 +294,22 @@ export default function UploadModal({ open, onClose }: Props) {
             </div>
           )}
 
-          {/* Upload button */}
+          {/* Analyze button */}
           {!result && (
             <button
-              onClick={() => uploadMutation.mutate()}
-              disabled={!file || !accountId || uploadMutation.isPending}
+              onClick={() => previewMutation.mutate()}
+              disabled={!file || !accountId || previewMutation.isPending}
               className="w-full bg-primary text-primary-foreground rounded-lg py-2.5 text-sm font-medium hover:opacity-90 disabled:opacity-40 flex items-center justify-center gap-2 transition-opacity"
             >
-              {uploadMutation.isPending ? (
+              {previewMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Analyzing & importing…
+                  Analyzing…
                 </>
               ) : (
                 <>
                   <Upload className="w-4 h-4" />
-                  Import
+                  Preview Import
                 </>
               )}
             </button>

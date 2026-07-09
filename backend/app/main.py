@@ -8,6 +8,7 @@ from app.routers import display_config
 from app.routers import stock_holdings
 from app.routers import admin
 from app.routers import checklist
+from app.routers import categorization_config
 
 
 @asynccontextmanager
@@ -44,6 +45,7 @@ app.include_router(display_config.router)
 app.include_router(stock_holdings.router)
 app.include_router(admin.router)
 app.include_router(checklist.router)
+app.include_router(categorization_config.router)
 
 
 @app.get("/health")

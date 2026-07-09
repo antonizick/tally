@@ -1,4 +1,4 @@
-"""CSV ingestion pipeline: parse → deduplicate → queue for AI categorization."""
+"""CSV ingestion pipeline: parse → deduplicate → rule-match → queue remainder for AI categorization."""
 import csv
 import hashlib
 import io
@@ -8,11 +8,12 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from app.models import (
-    Account, SchemaMapping, Transaction, ImportBatch, Category, CorrectionHistory
+    Account, SchemaMapping, Transaction, ImportBatch, Category, CorrectionHistory, Setting
 )
 from app.services.schema_mapper import (
     fingerprint_headers, detect_schema, parse_amount, parse_date, validate_amount_mapping
 )
+from app.services.rule_categorizer import build_history_index, is_exempt
 from app.ai.categorize import categorize_batch
 
 
@@ -86,6 +87,14 @@ async def get_categories(db: AsyncSession) -> dict[str, int]:
     return cat_map
 
 
+async def get_exemptions(db: AsyncSession) -> list[str]:
+    result = await db.execute(select(Setting).where(Setting.key == "categorization_exemptions"))
+    setting = result.scalar_one_or_none()
+    if not setting:
+        return []
+    return setting.value.get("exemptions", [])
+
+
 async def get_recent_corrections(db: AsyncSession) -> list[dict]:
     result = await db.execute(
         select(CorrectionHistory)
@@ -105,11 +114,16 @@ async def ingest_csv(
     filename: str,
     account_id: int,
     mapping_override: dict | None = None,
+    date_from: date_type | None = None,
+    preview: bool = False,
 ) -> dict:
     """
-    Full ingestion pipeline. Returns:
+    Full ingestion pipeline. date_from (if given) excludes transactions before that
+    date. preview=True computes counts only and writes nothing to the database.
+
+    Returns:
     {
-        batch_id, status, total, imported, duplicates,
+        batch_id, status, total, parsed, after_cutoff, duplicates, imported,
         needs_mapping_confirmation: bool,
         proposed_mapping: dict | None,
         fingerprint: str,
@@ -151,29 +165,6 @@ async def ingest_csv(
                 "duplicates": 0,
             }
 
-    # Save confirmed mapping if new
-    if not saved_mapping and mapping_override:
-        sm = SchemaMapping(
-            account_id=account_id,
-            header_fingerprint=fingerprint,
-            raw_headers=",".join(headers),
-            column_mapping=mapping,
-            date_format=mapping.get("date_format"),
-            amount_type=mapping.get("amount_type", "single"),
-            is_confirmed=True,
-        )
-        db.add(sm)
-
-    # Create import batch
-    batch = ImportBatch(
-        account_id=account_id,
-        filename=filename,
-        status="processing",
-        total_rows=len(rows),
-    )
-    db.add(batch)
-    await db.flush()
-
     # Parse rows
     parsed: list[dict] = []
     for row in rows:
@@ -207,16 +198,104 @@ async def ingest_csv(
             "raw": {k: str(v) for k, v in row.items()},
         })
 
-    # Get categories and corrections for AI
+    total_parsed = len(parsed)
+    if date_from:
+        parsed = [p for p in parsed if p["date"] >= date_from]
+    after_cutoff = len(parsed)
+
+    # Deduplicate BEFORE categorization, so rule-matching and AI calls are never
+    # wasted on rows that will just be discarded as duplicates.
+    for p in parsed:
+        p["dedup_hash"] = make_dedup_hash(account_id, p["date"], p["description"], p["amount"])
+
+    hashes = [p["dedup_hash"] for p in parsed]
+    existing_hashes: set[str] = set()
+    if hashes:
+        result = await db.execute(
+            select(Transaction.dedup_hash).where(Transaction.dedup_hash.in_(hashes))
+        )
+        existing_hashes = {row[0] for row in result.all()}
+
+    to_import: list[dict] = []
+    seen_in_batch: set[str] = set()
+    duplicates = 0
+    for p in parsed:
+        h = p["dedup_hash"]
+        if h in existing_hashes or h in seen_in_batch:
+            duplicates += 1
+            continue
+        seen_in_batch.add(h)
+        to_import.append(p)
+
+    if preview:
+        return {
+            "batch_id": None,
+            "status": "preview",
+            "needs_mapping_confirmation": False,
+            "proposed_mapping": mapping,
+            "fingerprint": fingerprint,
+            "total": len(rows),
+            "parsed": total_parsed,
+            "after_cutoff": after_cutoff,
+            "duplicates": duplicates,
+            "imported": len(to_import),
+        }
+
+    # Save confirmed mapping if new
+    if not saved_mapping and mapping_override:
+        sm = SchemaMapping(
+            account_id=account_id,
+            header_fingerprint=fingerprint,
+            raw_headers=",".join(headers),
+            column_mapping=mapping,
+            date_format=mapping.get("date_format"),
+            amount_type=mapping.get("amount_type", "single"),
+            is_confirmed=True,
+        )
+        db.add(sm)
+
+    # Create import batch
+    batch = ImportBatch(
+        account_id=account_id,
+        filename=filename,
+        status="processing",
+        total_rows=len(rows),
+    )
+    db.add(batch)
+    await db.flush()
+
+    # Get categories for matching/AI
     cat_map = await get_categories(db)
     cat_list = list(cat_map.keys())
-    corrections = await get_recent_corrections(db)
+    id_to_name = {v: k for k, v in cat_map.items()}
+    exemptions = await get_exemptions(db)
+    history_index = await build_history_index(db)
 
-    # AI categorization in batches of 25
-    ai_results: list[dict] = []
+    # Pass 1: exemptions skip auto-categorization entirely; rule matches from
+    # consistent history skip AI. Everything else queues for AI.
+    ai_results: list[dict | None] = [None] * len(to_import)
+    unmatched_idx: list[int] = []
+    for i, p in enumerate(to_import):
+        if is_exempt(p["description"], exemptions):
+            ai_results[i] = {"category": "Uncategorized", "confidence": 0.0, "is_transfer": False}
+            continue
+        match = history_index.match(p["description"])
+        if match:
+            category_id, confidence = match
+            ai_results[i] = {
+                "category": id_to_name.get(category_id, "Uncategorized"),
+                "confidence": confidence,
+                "is_transfer": False,
+            }
+        else:
+            unmatched_idx.append(i)
+
+    # Pass 2: AI categorization for the remainder, in batches of 25
+    corrections = await get_recent_corrections(db) if unmatched_idx else []
     batch_size = 25
-    for i in range(0, len(parsed), batch_size):
-        chunk = parsed[i:i + batch_size]
+    for i in range(0, len(unmatched_idx), batch_size):
+        chunk_idx = unmatched_idx[i:i + batch_size]
+        chunk = [to_import[j] for j in chunk_idx]
         if cat_list:
             results = await categorize_batch(
                 [{"description": p["description"]} for p in chunk],
@@ -225,20 +304,12 @@ async def ingest_csv(
             )
         else:
             results = [{"category": "Uncategorized", "confidence": 0.0, "is_transfer": False}] * len(chunk)
-        ai_results.extend(results)
+        for j, r in zip(chunk_idx, results):
+            ai_results[j] = r
 
-    # Insert transactions, skip duplicates
+    # Insert transactions
     imported = 0
-    duplicates = 0
-    for p, ai in zip(parsed, ai_results):
-        dedup = make_dedup_hash(account_id, p["date"], p["description"], p["amount"])
-        existing = await db.execute(
-            select(Transaction).where(Transaction.dedup_hash == dedup)
-        )
-        if existing.scalar_one_or_none():
-            duplicates += 1
-            continue
-
+    for p, ai in zip(to_import, ai_results):
         ai_category = ai.get("category", "Uncategorized")
         confidence = float(ai.get("confidence", 0.0))
         category_id = cat_map.get(ai_category)
@@ -259,7 +330,7 @@ async def ingest_csv(
             confidence=confidence,
             ai_category_suggestion=ai_category,
             is_transfer=bool(ai.get("is_transfer", False)),
-            dedup_hash=dedup,
+            dedup_hash=p["dedup_hash"],
             raw_source=p["raw"],
         )
         db.add(tx)
@@ -278,6 +349,8 @@ async def ingest_csv(
         "proposed_mapping": None,
         "fingerprint": fingerprint,
         "total": len(rows),
+        "parsed": total_parsed,
+        "after_cutoff": after_cutoff,
         "imported": imported,
         "duplicates": duplicates,
     }

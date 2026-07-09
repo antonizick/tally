@@ -86,6 +86,13 @@ export const displayConfigApi = {
     api.put('/api/display-config/', data).then(r => r.data),
 }
 
+// ---- Categorization Config ----
+export const categorizationConfigApi = {
+  get: () => api.get('/api/categorization-config/').then(r => r.data),
+  save: (data: { exemptions: string[] }) =>
+    api.put('/api/categorization-config/', data).then(r => r.data),
+}
+
 // ---- Stock Holdings ----
 export const stockHoldingsApi = {
   list: () => api.get('/api/stock-holdings/').then(r => r.data),
