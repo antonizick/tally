@@ -1,0 +1,40 @@
+{
+  "version": "1",
+  "app_version": "0.1.0",
+  "created_at": "2026-05-20T20:16:41.446322+00:00",
+  "table_row_counts": {
+    "accounts": 3,
+    "categories": 72,
+    "tags": 6,
+    "schema_mappings": 0,
+    "import_batches": 3,
+    "transactions": 1058,
+    "transaction_tags": 0,
+    "correction_history": 102,
+    "monthly_snapshots": 10,
+    "snapshot_items": 108,
+    "net_worth_views": 7,
+    "recurring_bills": 0,
+    "settings": 1,
+    "stock_holdings": 3,
+    "stock_price_history": 45
+  },
+  "file_checksums": {
+    "json/accounts.json": "sha256:8ad219217c9ff4e84679e92e934e4290a7005597704d1c922f59ebeb0215310d",
+    "json/categories.json": "sha256:66f6c865f6415fd6ddc6b19f68a330c142fd4ecb89939892d420a5c518256969",
+    "json/tags.json": "sha256:74813298fa08bbbf5597e6126bb3ef86282a8da1ad4695791ff1ccca374c169d",
+    "json/schema_mappings.json": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "json/import_batches.json": "sha256:308da9d4e6a53857b23559fa964b5e61eace56d064ceabc21e5ddab302271fb6",
+    "json/transactions.json": "sha256:8ff209da702d389b3c42474d1121713394ae15a861bb3cb47aa5d2ce9d559658",
+    "json/transaction_tags.json": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "json/correction_history.json": "sha256:93dedd622a506cb5c3aa7d7c1ba0d69f916b06c671ca07a81bbfbf1006fa5276",
+    "json/monthly_snapshots.json": "sha256:31076a089ea2d88bdb934479b1c730df7e154798c917bcd7a68db469ece7e566",
+    "json/snapshot_items.json": "sha256:05143cc4fc7f0f087687d1e76b54667082180288e034a30d15d8ca7dac9ea09f",
+    "json/net_worth_views.json": "sha256:c332508d8c66bbdc5fb34fc90ec313bdc9133b840a572a70e2a432c002a9088e",
+    "json/recurring_bills.json": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "json/settings.json": "sha256:bbc6b8fae407abbbf445a4f26ce4b0581c5ef59c090cd91e44da2fd998c9b34f",
+    "json/stock_holdings.json": "sha256:f3c2e375b9cdc5adc6fc1b75e7aed5520c29b278d774185e3f087777349df969",
+    "json/stock_price_history.json": "sha256:b2dd661ba1b0db85b21ac6f722828f09e37c09f6743f9c3ad1fe2f974f33692b",
+    "sql/tally_dump.sql": "sha256:e2723deaaee80412578cbd236b64ebd65586dcd124cbb620bbd6156e16975dd6"
+  }
+}

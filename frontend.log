@@ -1,0 +1,11 @@
+
+> tally-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+
+  VITE v6.4.2  ready in 103 ms
+
+  ➜  Local:   http://127.0.0.1:5173/
+8:21:34 AM [vite] (client) hmr update /src/index.css, /src/pages/Transactions.tsx, /src/pages/Assets.tsx, /src/pages/Reports.tsx, /src/pages/Settings.tsx, /src/pages/Dashboard.tsx, /src/components/checklist/ChecklistTable.tsx, /src/components/layout/Header.tsx, /src/components/checklist/ChecklistManager.tsx, /src/components/settings/CategorizationExemptions.tsx, /src/components/settings/AdminTab.tsx, /src/components/settings/CategoriesManager.tsx, /src/components/upload/UploadModal.tsx
+8:21:41 AM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css
+8:21:57 AM [vite] (client) hmr update /src/components/layout/Header.tsx, /src/index.css

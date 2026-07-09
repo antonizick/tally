@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "account_id": 1,
+    "filename": "AccountHistory.csv",
+    "status": "complete",
+    "total_rows": 716,
+    "imported_rows": 716,
+    "duplicate_rows": 0,
+    "error_message": null,
+    "created_at": "2026-05-20 06:38:33",
+    "completed_at": null
+  },
+  {
+    "id": 2,
+    "account_id": 2,
+    "filename": "bk_download.csv",
+    "status": "complete",
+    "total_rows": 309,
+    "imported_rows": 307,
+    "duplicate_rows": 2,
+    "error_message": null,
+    "created_at": "2026-05-20 06:38:48",
+    "completed_at": null
+  },
+  {
+    "id": 3,
+    "account_id": 3,
+    "filename": "download.csv",
+    "status": "complete",
+    "total_rows": 35,
+    "imported_rows": 35,
+    "duplicate_rows": 0,
+    "error_message": null,
+    "created_at": "2026-05-20 06:38:49",
+    "completed_at": null
+  }
+]

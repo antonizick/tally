@@ -1,0 +1,119 @@
+
+> tally-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+Port 5173 is in use, trying another one...
+
+  VITE v6.4.2  ready in 116 ms
+
+  ➜  Local:   http://127.0.0.1:5174/
+INFO:     Started server process [2124332]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8010 (Press CTRL+C to quit)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2124332]
+
+> tally-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+Port 5173 is in use, trying another one...
+
+  VITE v6.4.2  ready in 91 ms
+
+  ➜  Local:   http://127.0.0.1:5174/
+INFO:     Started server process [2124904]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8010 (Press CTRL+C to quit)
+INFO:     127.0.0.1:40624 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40648 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40662 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40624 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40676 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40688 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40632 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40632 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40676 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40632 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40624 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40662 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40648 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40688 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47578 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47598 - "GET /api/tags/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47588 - "GET /api/stock-holdings/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47566 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53340 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51360 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51384 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51370 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51364 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48288 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48292 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48288 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48318 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48306 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48330 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48280 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36944 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36970 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36994 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36982 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37004 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36960 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57998 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58012 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57998 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58040 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58022 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58038 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58006 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58038 - "GET /api/display-config/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58006 - "GET /api/snapshots/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58038 - "GET /api/checklist/statuses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58006 - "GET /api/checklist/entries?snapshot_id=11 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38810 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38790 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38800 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38790 - "GET /api/transactions/source-files?date_from=2026-06-01&date_to=2026-06-30 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38810 - "GET /api/tags/relevant?date_from=2026-06-01&date_to=2026-06-30 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38800 - "GET /api/transactions/?date_from=2026-06-01&date_to=2026-06-30&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39950 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44942 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false&tag_ids=10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33912 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false&tag_ids=10,7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33912 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false&tag_ids=7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33912 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33912 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34656 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34694 - "GET /api/tags/relevant?date_from=2026-06-01&date_to=2026-06-30 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34710 - "GET /api/dashboard/summary?date_from=2026-06-01&date_to=2026-06-30&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34662 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34678 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34640 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43504 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43526 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43534 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43504 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43542 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43536 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43510 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45622 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36386 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51340 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49886 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49896 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49898 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49886 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49910 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49916 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49928 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39188 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39204 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39190 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39188 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39234 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39220 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39222 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK

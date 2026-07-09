@@ -1,0 +1,54 @@
+
+> tally-frontend@0.1.0 dev
+> vite
+
+
+  VITE v6.4.2  ready in 78 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://10.255.255.254:5173/
+  ➜  Network: http://172.30.249.188:5173/
+  ➜  Network: http://172.18.0.1:5173/
+  ➜  Network: http://172.17.0.1:5173/
+7:05:22 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+7:05:26 AM [vite] (client) hmr update /src/index.css, /src/pages/Reports.tsx, /src/pages/Transactions.tsx, /src/pages/Settings.tsx, /src/pages/Dashboard.tsx, /src/pages/Assets.tsx, /src/components/layout/Header.tsx, /src/components/checklist/ChecklistManager.tsx, /src/components/settings/CategoriesManager.tsx, /src/components/settings/AdminTab.tsx, /src/components/checklist/ChecklistTable.tsx, /src/components/upload/UploadModal.tsx
+7:05:34 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+7:05:38 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+7:05:41 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:34:12 AM [vite] (client) hmr update /src/index.css, /src/pages/Reports.tsx, /src/pages/Transactions.tsx, /src/pages/Settings.tsx, /src/pages/Dashboard.tsx, /src/pages/Assets.tsx, /src/components/layout/Header.tsx, /src/components/checklist/ChecklistManager.tsx, /src/components/settings/CategoriesManager.tsx, /src/components/settings/AdminTab.tsx, /src/components/checklist/ChecklistTable.tsx, /src/components/upload/UploadModal.tsx
+6:34:16 AM [vite] (client) hmr update /src/index.css, /src/pages/Reports.tsx, /src/pages/Transactions.tsx, /src/pages/Settings.tsx, /src/pages/Dashboard.tsx, /src/pages/Assets.tsx, /src/components/layout/Header.tsx, /src/components/checklist/ChecklistManager.tsx, /src/components/settings/CategoriesManager.tsx, /src/components/settings/AdminTab.tsx, /src/components/checklist/ChecklistTable.tsx, /src/components/upload/UploadModal.tsx
+6:34:21 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:34:25 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:34:31 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:34:42 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:34:47 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:34:52 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+6:35:00 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:14 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:18 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:23 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:28 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:34 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:35:39 AM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+6:35:44 AM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+6:35:52 AM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+6:35:57 AM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+6:36:16 AM [vite] (client) hmr update /src/pages/Settings.tsx, /src/index.css
+6:46:06 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:46:19 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:46:25 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:56:42 AM [vite] (client) hmr update /src/index.css, /src/pages/Reports.tsx, /src/pages/Transactions.tsx, /src/pages/Settings.tsx, /src/pages/Dashboard.tsx, /src/pages/Assets.tsx, /src/components/layout/Header.tsx, /src/components/checklist/ChecklistManager.tsx, /src/components/settings/CategoriesManager.tsx, /src/components/settings/AdminTab.tsx, /src/components/checklist/ChecklistTable.tsx, /src/components/upload/UploadModal.tsx
+6:56:47 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+6:56:52 AM [vite] (client) hmr update /src/pages/Transactions.tsx, /src/index.css
+7:04:25 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+7:04:33 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+7:04:39 AM [vite] (client) hmr update /src/pages/Dashboard.tsx, /src/index.css
+Killed
+
+> tally-frontend@0.1.0 dev
+> vite --host 127.0.0.1 --port 5173
+
+
+  VITE v6.4.2  ready in 168 ms
+
+  ➜  Local:   http://127.0.0.1:5173/

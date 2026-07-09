@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "ticker": "QQQ",
+    "name": null,
+    "quantity": 270.22,
+    "created_at": "2026-05-20 11:02:07"
+  },
+  {
+    "id": 2,
+    "ticker": "TSLA",
+    "name": "Tesla",
+    "quantity": 226.0,
+    "created_at": "2026-05-20 11:02:29"
+  },
+  {
+    "id": 3,
+    "ticker": "Z",
+    "name": "Zillow",
+    "quantity": 1272.0,
+    "created_at": "2026-05-20 11:02:51"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Nick",
+    "type": "person",
+    "color": "#3b82f6",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 2,
+    "name": "Emma",
+    "type": "person",
+    "color": "#ec4899",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 3,
+    "name": "Family",
+    "type": "project",
+    "color": "#22c55e",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 4,
+    "name": "Work",
+    "type": "project",
+    "color": "#f59e0b",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 5,
+    "name": "Cat Stuff",
+    "type": "custom",
+    "color": "#8b5cf6",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 6,
+    "name": "Subscriptions",
+    "type": "custom",
+    "color": "#06b6d4",
+    "created_at": "2026-05-20 06:38:33"
+  }
+]

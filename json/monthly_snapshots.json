@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "effective_date": "2025-09-01",
+    "notes": "September 2025",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 2,
+    "effective_date": "2025-10-01",
+    "notes": "October 2025",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 3,
+    "effective_date": "2025-11-01",
+    "notes": "November 2025",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 4,
+    "effective_date": "2025-12-01",
+    "notes": "December 2025",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 5,
+    "effective_date": "2026-01-01",
+    "notes": "January 2026",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 6,
+    "effective_date": "2026-02-01",
+    "notes": "February 2026",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 7,
+    "effective_date": "2026-03-01",
+    "notes": "March 2026",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 8,
+    "effective_date": "2026-04-01",
+    "notes": "April 2026",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 9,
+    "effective_date": "2026-05-01",
+    "notes": "May 2026",
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 07:54:02",
+    "updated_at": "2026-05-20 07:54:02"
+  },
+  {
+    "id": 10,
+    "effective_date": "2026-06-01",
+    "notes": null,
+    "is_confirmed": 1,
+    "created_at": "2026-05-20 11:34:54",
+    "updated_at": "2026-05-20 11:34:54"
+  }
+]

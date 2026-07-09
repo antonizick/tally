@@ -1,0 +1,180 @@
+INFO:     Will watch for changes in these directories: ['/home/nick/dev/lucent/idea/Tally/backend']
+INFO:     Uvicorn running on http://127.0.0.1:8010 (Press CTRL+C to quit)
+INFO:     Started reloader process [87197] using WatchFiles
+INFO:     Started server process [87285]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:46750 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46786 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46800 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46784 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46760 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46812 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46820 - "GET /api/categorization-config/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46768 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49300 - "POST /api/upload/csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50416 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50416 - "POST /api/upload/csv/confirm-mapping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50416 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "OPTIONS /api/transactions/1260 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "PATCH /api/transactions/1260 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45946 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37836 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60916 - "OPTIONS /api/transactions/1258 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60916 - "PATCH /api/transactions/1258 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60916 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55666 - "OPTIONS /api/transactions/1259 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55666 - "PATCH /api/transactions/1259 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55666 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34464 - "OPTIONS /api/transactions/1255 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34464 - "PATCH /api/transactions/1255 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34464 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41574 - "OPTIONS /api/transactions/1254 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41574 - "PATCH /api/transactions/1254 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41574 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41574 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34342 - "OPTIONS /api/transactions/1264 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34342 - "PATCH /api/transactions/1264 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34342 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39334 - "OPTIONS /api/transactions/1263 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39334 - "PATCH /api/transactions/1263 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39334 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "OPTIONS /api/transactions/1262 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "PATCH /api/transactions/1262 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "OPTIONS /api/transactions/1261 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "PATCH /api/transactions/1261 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54376 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38120 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56308 - "POST /api/upload/csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40396 - "POST /api/upload/csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50822 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56868 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&source_file=USAA_CC_bk_download+07.09.2026.csv&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45304 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&source_file=Advia_Checking_AccountHistory+07.01.2026.preped.csv&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38570 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33246 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56978 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57014 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57020 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56988 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56982 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57004 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57004 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&source_file=Advia_CC_download.07.09.2026.csv&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56300 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56310 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45928 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45922 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45926 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55206 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48286 - "POST /api/upload/csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39586 - "POST /api/upload/csv HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39586 - "POST /api/upload/csv/confirm-mapping HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39586 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39240 - "OPTIONS /api/transactions/1268 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39240 - "PATCH /api/transactions/1268 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39240 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59632 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48296 - "OPTIONS /api/transactions/1271 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48296 - "PATCH /api/transactions/1271 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48296 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40144 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&review_status=pending&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57034 - "OPTIONS /api/transactions/1270 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57034 - "PATCH /api/transactions/1270 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57034 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&review_status=pending&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "OPTIONS /api/transactions/1269 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "PATCH /api/transactions/1269 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&review_status=pending&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57058 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57064 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57042 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59038 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44846 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44878 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44888 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44856 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44862 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44860 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44878 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44860 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44846 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44862 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44888 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44856 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44860 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44856 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44878 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44888 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44846 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44862 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48236 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60750 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39312 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'app/routers/transactions.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [87285]
+INFO:     Started server process [94199]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/routers/transactions.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [94199]
+INFO:     Started server process [94273]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:43196 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43218 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43232 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43210 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43208 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34418 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59996 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'tests/test_approve_all_pending.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [94273]
+INFO:     Started server process [94912]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:33492 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33508 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33522 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33488 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33500 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33498 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51962 - "GET /api/accounts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52002 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52012 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51972 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51998 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51986 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36048 - "POST /api/transactions/approve-all-pending HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36048 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36062 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36062 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33162 - "GET /api/stock-holdings/portfolio-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33154 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33150 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36048 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52466 - "GET /api/transactions/source-files?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52462 - "GET /api/categories/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52462 - "GET /api/transactions/?date_from=2026-07-01&date_to=2026-07-31&source_file=USAA_CC_bk_download+07.09.2026.csv&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42802 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54044 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38668 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57534 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39102 - "GET /api/tags/relevant?date_from=2026-07-01&date_to=2026-07-31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39118 - "GET /api/net-worth/detail-trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39114 - "GET /api/net-worth/trend HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39108 - "GET /api/dashboard/summary?date_from=2026-07-01&date_to=2026-07-31&show_quiet=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53740 - "GET /api/transactions/review-queue HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37438 - "GET /openapi.json HTTP/1.1" 200 OK

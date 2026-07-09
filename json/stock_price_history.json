@@ -1,0 +1,317 @@
+[
+  {
+    "id": 1,
+    "ticker": "QQQ",
+    "week_date": "2026-02-09",
+    "close_price": 601.1619873046875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 2,
+    "ticker": "QQQ",
+    "week_date": "2026-02-16",
+    "close_price": 608.0433349609375,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 3,
+    "ticker": "QQQ",
+    "week_date": "2026-02-23",
+    "close_price": 606.5252075195312,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 4,
+    "ticker": "QQQ",
+    "week_date": "2026-03-02",
+    "close_price": 598.9946899414062,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 5,
+    "ticker": "QQQ",
+    "week_date": "2026-03-09",
+    "close_price": 592.9722900390625,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 6,
+    "ticker": "QQQ",
+    "week_date": "2026-03-16",
+    "close_price": 581.3269653320312,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 7,
+    "ticker": "QQQ",
+    "week_date": "2026-03-23",
+    "close_price": 561.8715209960938,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 8,
+    "ticker": "QQQ",
+    "week_date": "2026-03-30",
+    "close_price": 584.97998046875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 9,
+    "ticker": "QQQ",
+    "week_date": "2026-04-06",
+    "close_price": 611.0700073242188,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 10,
+    "ticker": "QQQ",
+    "week_date": "2026-04-13",
+    "close_price": 648.8499755859375,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 11,
+    "ticker": "QQQ",
+    "week_date": "2026-04-20",
+    "close_price": 663.8800048828125,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 12,
+    "ticker": "QQQ",
+    "week_date": "2026-04-27",
+    "close_price": 674.1500244140625,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 13,
+    "ticker": "QQQ",
+    "week_date": "2026-05-04",
+    "close_price": 711.22998046875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 14,
+    "ticker": "QQQ",
+    "week_date": "2026-05-11",
+    "close_price": 708.9299926757812,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 15,
+    "ticker": "QQQ",
+    "week_date": "2026-05-18",
+    "close_price": 701.530029296875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 16,
+    "ticker": "TSLA",
+    "week_date": "2026-02-09",
+    "close_price": 417.44000244140625,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 17,
+    "ticker": "TSLA",
+    "week_date": "2026-02-16",
+    "close_price": 411.82000732421875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 18,
+    "ticker": "TSLA",
+    "week_date": "2026-02-23",
+    "close_price": 402.510009765625,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 19,
+    "ticker": "TSLA",
+    "week_date": "2026-03-02",
+    "close_price": 396.7300109863281,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 20,
+    "ticker": "TSLA",
+    "week_date": "2026-03-09",
+    "close_price": 391.20001220703125,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 21,
+    "ticker": "TSLA",
+    "week_date": "2026-03-16",
+    "close_price": 367.9599914550781,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 22,
+    "ticker": "TSLA",
+    "week_date": "2026-03-23",
+    "close_price": 361.8299865722656,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 23,
+    "ticker": "TSLA",
+    "week_date": "2026-03-30",
+    "close_price": 360.5899963378906,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 24,
+    "ticker": "TSLA",
+    "week_date": "2026-04-06",
+    "close_price": 348.95001220703125,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 25,
+    "ticker": "TSLA",
+    "week_date": "2026-04-13",
+    "close_price": 400.6199951171875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 26,
+    "ticker": "TSLA",
+    "week_date": "2026-04-20",
+    "close_price": 376.29998779296875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 27,
+    "ticker": "TSLA",
+    "week_date": "2026-04-27",
+    "close_price": 390.82000732421875,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 28,
+    "ticker": "TSLA",
+    "week_date": "2026-05-04",
+    "close_price": 428.3500061035156,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 29,
+    "ticker": "TSLA",
+    "week_date": "2026-05-11",
+    "close_price": 422.239990234375,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 30,
+    "ticker": "TSLA",
+    "week_date": "2026-05-18",
+    "close_price": 404.1099853515625,
+    "fetched_at": "2026-05-20 11:10:57"
+  },
+  {
+    "id": 31,
+    "ticker": "Z",
+    "week_date": "2026-02-09",
+    "close_price": 43.45000076293945,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 32,
+    "ticker": "Z",
+    "week_date": "2026-02-16",
+    "close_price": 45.459999084472656,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 33,
+    "ticker": "Z",
+    "week_date": "2026-02-23",
+    "close_price": 44.619998931884766,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 34,
+    "ticker": "Z",
+    "week_date": "2026-03-02",
+    "close_price": 45.90999984741211,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 35,
+    "ticker": "Z",
+    "week_date": "2026-03-09",
+    "close_price": 42.900001525878906,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 36,
+    "ticker": "Z",
+    "week_date": "2026-03-16",
+    "close_price": 43.95000076293945,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 37,
+    "ticker": "Z",
+    "week_date": "2026-03-23",
+    "close_price": 40.439998626708984,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 38,
+    "ticker": "Z",
+    "week_date": "2026-03-30",
+    "close_price": 40.599998474121094,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 39,
+    "ticker": "Z",
+    "week_date": "2026-04-06",
+    "close_price": 39.869998931884766,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 40,
+    "ticker": "Z",
+    "week_date": "2026-04-13",
+    "close_price": 46.86000061035156,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 41,
+    "ticker": "Z",
+    "week_date": "2026-04-20",
+    "close_price": 45.40999984741211,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 42,
+    "ticker": "Z",
+    "week_date": "2026-04-27",
+    "close_price": 45.279998779296875,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 43,
+    "ticker": "Z",
+    "week_date": "2026-05-04",
+    "close_price": 41.43000030517578,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 44,
+    "ticker": "Z",
+    "week_date": "2026-05-11",
+    "close_price": 37.65999984741211,
+    "fetched_at": "2026-05-20 11:10:58"
+  },
+  {
+    "id": 45,
+    "ticker": "Z",
+    "week_date": "2026-05-18",
+    "close_price": 36.0,
+    "fetched_at": "2026-05-20 11:10:58"
+  }
+]

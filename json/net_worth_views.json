@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "name": "Retirement accounts (no house, no stocks)",
+    "definition": "{\"include_types\": [\"retirement_401k\", \"retirement_ira\"], \"exclude_types\": [], \"exclude_liabilities\": false}",
+    "display_order": 0,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 2,
+    "name": "Retirement accounts and stocks (no house)",
+    "definition": "{\"include_types\": [\"retirement_401k\", \"retirement_ira\", \"brokerage\"], \"exclude_types\": [], \"exclude_liabilities\": false}",
+    "display_order": 1,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 3,
+    "name": "On hand cash (no stock) (not including debt)",
+    "definition": "{\"include_types\": [\"checking\", \"savings\"], \"exclude_types\": [], \"exclude_liabilities\": false}",
+    "display_order": 2,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 4,
+    "name": "On hand (no stock) after all debt (car included)",
+    "definition": "{\"include_types\": [\"checking\", \"savings\"], \"exclude_types\": [\"car_loan\", \"mortgage\", \"credit_card\", \"other_liability\"], \"exclude_liabilities\": true}",
+    "display_order": 3,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 5,
+    "name": "On hand & stock after all debt (car included)",
+    "definition": "{\"include_types\": [\"checking\", \"savings\", \"brokerage\"], \"exclude_types\": [\"car_loan\", \"mortgage\", \"credit_card\", \"other_liability\"], \"exclude_liabilities\": true}",
+    "display_order": 4,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 6,
+    "name": "Retirement accounts, stocks, cash (no house)",
+    "definition": "{\"include_types\": [\"checking\", \"savings\", \"retirement_401k\", \"retirement_ira\", \"brokerage\"], \"exclude_types\": [], \"exclude_liabilities\": false}",
+    "display_order": 5,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 7,
+    "name": "The whole enchilada",
+    "definition": "{\"include_types\": [], \"exclude_types\": [], \"exclude_liabilities\": true}",
+    "display_order": 6,
+    "is_default": 1,
+    "is_active": 1,
+    "created_at": "2026-05-20 06:38:33"
+  }
+]

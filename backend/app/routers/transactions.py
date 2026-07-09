@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, and_, or_, func
+from sqlalchemy import select, and_, or_, func, update
 from sqlalchemy.orm import selectinload
 from app.database import get_db
 from app.models import Transaction, TransactionTag, Tag, Category, CorrectionHistory, ImportBatch
@@ -225,6 +225,17 @@ async def bulk_approve(ids: list[int], db: AsyncSession = Depends(get_db)):
         tx.review_status = "approved"
     await db.commit()
     return {"approved": len(txs)}
+
+
+@router.post("/approve-all-pending")
+async def approve_all_pending(db: AsyncSession = Depends(get_db)):
+    """Accept every transaction currently pending review, as-is, regardless of
+    page/filter. New imports still start pending as usual."""
+    result = await db.execute(
+        update(Transaction).where(Transaction.review_status == "pending").values(review_status="approved")
+    )
+    await db.commit()
+    return {"approved": result.rowcount}
 
 
 @router.get("/summary")

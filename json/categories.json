@@ -1,0 +1,578 @@
+[
+  {
+    "id": 1,
+    "name": "Income",
+    "parent_id": null,
+    "color": "#22c55e",
+    "icon": "dollar-sign",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 2,
+    "name": "Housing",
+    "parent_id": null,
+    "color": "#3b82f6",
+    "icon": "home",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 3,
+    "name": "Food",
+    "parent_id": null,
+    "color": "#f59e0b",
+    "icon": "utensils",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 4,
+    "name": "Transportation",
+    "parent_id": null,
+    "color": "#8b5cf6",
+    "icon": "car",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 5,
+    "name": "Healthcare",
+    "parent_id": null,
+    "color": "#ec4899",
+    "icon": "heart",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 6,
+    "name": "Entertainment",
+    "parent_id": null,
+    "color": "#06b6d4",
+    "icon": "film",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 7,
+    "name": "Shopping",
+    "parent_id": null,
+    "color": "#f97316",
+    "icon": "shopping-bag",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 8,
+    "name": "Utilities",
+    "parent_id": null,
+    "color": "#6366f1",
+    "icon": "zap",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 9,
+    "name": "Insurance",
+    "parent_id": null,
+    "color": "#84cc16",
+    "icon": "shield",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 10,
+    "name": "Education",
+    "parent_id": null,
+    "color": "#14b8a6",
+    "icon": "book",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 11,
+    "name": "Personal Care",
+    "parent_id": null,
+    "color": "#f43f5e",
+    "icon": "user",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 12,
+    "name": "Savings & Investments",
+    "parent_id": null,
+    "color": "#10b981",
+    "icon": "trending-up",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 13,
+    "name": "Debt Payments",
+    "parent_id": null,
+    "color": "#ef4444",
+    "icon": "credit-card",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 14,
+    "name": "Transfers",
+    "parent_id": null,
+    "color": "#94a3b8",
+    "icon": "repeat",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 15,
+    "name": "Uncategorized",
+    "parent_id": null,
+    "color": "#6b7280",
+    "icon": "help-circle",
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 16,
+    "name": "Salary",
+    "parent_id": 1,
+    "color": "#22c55e",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 17,
+    "name": "Freelance",
+    "parent_id": 1,
+    "color": "#22c55e",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 18,
+    "name": "Dividends",
+    "parent_id": 1,
+    "color": "#22c55e",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 19,
+    "name": "Rental Income",
+    "parent_id": 1,
+    "color": "#22c55e",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 20,
+    "name": "Other Income",
+    "parent_id": 1,
+    "color": "#22c55e",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 21,
+    "name": "Rent/Mortgage",
+    "parent_id": 2,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 22,
+    "name": "HOA Fees",
+    "parent_id": 2,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 23,
+    "name": "Home Maintenance",
+    "parent_id": 2,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 24,
+    "name": "Home Improvement",
+    "parent_id": 2,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 25,
+    "name": "Groceries",
+    "parent_id": 3,
+    "color": "#f59e0b",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 26,
+    "name": "Dining Out",
+    "parent_id": 3,
+    "color": "#f59e0b",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 27,
+    "name": "Coffee & Tea",
+    "parent_id": 3,
+    "color": "#f59e0b",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 28,
+    "name": "Fast Food",
+    "parent_id": 3,
+    "color": "#f59e0b",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 29,
+    "name": "Alcohol",
+    "parent_id": 3,
+    "color": "#f59e0b",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 30,
+    "name": "Gas",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 31,
+    "name": "Car Maintenance",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 32,
+    "name": "Car Payment",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 33,
+    "name": "Public Transit",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 34,
+    "name": "Parking",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 35,
+    "name": "Rideshare",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 36,
+    "name": "Doctor",
+    "parent_id": 5,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 37,
+    "name": "Dentist",
+    "parent_id": 5,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 38,
+    "name": "Pharmacy",
+    "parent_id": 5,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 39,
+    "name": "Vision",
+    "parent_id": 5,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 40,
+    "name": "Mental Health",
+    "parent_id": 5,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 41,
+    "name": "Streaming",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 42,
+    "name": "Games",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 43,
+    "name": "Movies",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 44,
+    "name": "Sports",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 45,
+    "name": "Hobbies",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 46,
+    "name": "Clothing",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 47,
+    "name": "Electronics",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 48,
+    "name": "Household",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 49,
+    "name": "Amazon",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 50,
+    "name": "Other Shopping",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 51,
+    "name": "Electric",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 52,
+    "name": "Gas/Heating",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 53,
+    "name": "Water",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 54,
+    "name": "Internet",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 55,
+    "name": "Phone",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 56,
+    "name": "Trash",
+    "parent_id": 8,
+    "color": "#6366f1",
+    "icon": null,
+    "created_at": "2026-05-20 06:38:33"
+  },
+  {
+    "id": 57,
+    "name": "Pets",
+    "parent_id": null,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 07:08:31"
+  },
+  {
+    "id": 58,
+    "name": "Medical",
+    "parent_id": 57,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 07:09:14"
+  },
+  {
+    "id": 59,
+    "name": "Food",
+    "parent_id": 57,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 07:09:26"
+  },
+  {
+    "id": 60,
+    "name": "Other",
+    "parent_id": 57,
+    "color": "#ec4899",
+    "icon": null,
+    "created_at": "2026-05-20 07:09:33"
+  },
+  {
+    "id": 61,
+    "name": "Music Tidal",
+    "parent_id": 6,
+    "color": "#06b6d4",
+    "icon": null,
+    "created_at": "2026-05-20 07:29:24"
+  },
+  {
+    "id": 62,
+    "name": "Tech",
+    "parent_id": null,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 07:31:12"
+  },
+  {
+    "id": 63,
+    "name": "AWS",
+    "parent_id": 62,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 07:31:44"
+  },
+  {
+    "id": 64,
+    "name": "AI Claude",
+    "parent_id": 62,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 07:31:56"
+  },
+  {
+    "id": 65,
+    "name": "Car Data Sub TeslaFi",
+    "parent_id": 4,
+    "color": "#8b5cf6",
+    "icon": null,
+    "created_at": "2026-05-20 07:32:45"
+  },
+  {
+    "id": 66,
+    "name": "EassyNews",
+    "parent_id": 62,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 07:33:19"
+  },
+  {
+    "id": 67,
+    "name": "One Off",
+    "parent_id": null,
+    "color": "#f43f5e",
+    "icon": null,
+    "created_at": "2026-05-20 07:34:13"
+  },
+  {
+    "id": 68,
+    "name": "Cash Withdrawal",
+    "parent_id": 7,
+    "color": "#f97316",
+    "icon": null,
+    "created_at": "2026-05-20 08:24:30"
+  },
+  {
+    "id": 69,
+    "name": "Quiet",
+    "parent_id": null,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 08:50:43"
+  },
+  {
+    "id": 70,
+    "name": "Transfers",
+    "parent_id": 69,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 09:02:38"
+  },
+  {
+    "id": 71,
+    "name": "CC Payment",
+    "parent_id": 69,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 09:02:55"
+  },
+  {
+    "id": 72,
+    "name": "Mystery Unknown",
+    "parent_id": null,
+    "color": "#3b82f6",
+    "icon": null,
+    "created_at": "2026-05-20 09:48:26"
+  }
+]
